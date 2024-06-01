@@ -7,8 +7,8 @@ import { z } from "zod";
 import { ArrowRight } from "lucide-react";
 import ForgotPasswordDialog from "./forgot-password";
 import { useState } from "react";
-import { loginSchema } from "@/app/(auth)/auth-page/page";
 import useSession from "@/hook/use-session";
+import { loginSchema } from "@/lib/types";
 
 interface SignInFormProps {
     form: UseFormReturn<{

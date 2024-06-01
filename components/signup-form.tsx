@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import { UseFormReturn } from "react-hook-form";
 import { z } from "zod";
 import { ArrowRight } from "lucide-react";
-import { createSchema } from "@/app/(auth)/auth-page/page";
+import { createSchema } from "@/lib/types";
 
 interface SignUpFormProps {
     form: UseFormReturn<{
