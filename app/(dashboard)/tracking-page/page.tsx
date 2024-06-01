@@ -9,10 +9,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import axios from "axios";
 import Inventory from "../inventory-page/page";
-
-export const searchSchema = z.object({
-    search: z.string().min(1, 'Search Input is required, before searching..'),
-});
+import { searchSchema } from "@/lib/types";
 
 const Tracking = () => {
 
