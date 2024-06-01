@@ -2,8 +2,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import useMount from "@/hook/use-mount";
 import Searching from "./search";
 import { UseFormReturn } from "react-hook-form";
-import { searchSchema } from "../page";
 import { z } from "zod"
+import { searchSchema } from "@/lib/types";
 
 interface UpperProps {
     onSearch: (values: z.infer<typeof searchSchema>) => Promise<void>
