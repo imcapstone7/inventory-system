@@ -1,28 +1,76 @@
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
-import { ChevronDown, CircleHelp, LogOut, Settings, SquareUserRound } from "lucide-react";
+import { ChevronDown, CircleHelp, CircleUserRound, LogOut, Settings } from "lucide-react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { ModeToggle } from "../theme-toggle";
 import { Skeleton } from "../ui/skeleton";
-import { useSession } from "@/app/session-context";
+import { ChangeEvent, useState } from "react";
+import { IronSession } from "iron-session";
+import { SessionData } from "@/lib/lib";
+import { Separator } from "../ui/separator";
+import ChangeImageAndName from "./change-image-and-name";
+import { UserData } from "../navbar";
+import { storage } from "@/firebase";
+import { ref as storageRef, uploadBytes } from "@firebase/storage";
+import { database } from "@/firebase";
+import { getDownloadURL } from "@firebase/storage";
+import { ref, update } from "firebase/database";
 
 interface DropdownSettingsProps {
-    isMounted: boolean
+    isMounted: boolean,
+    session: IronSession<SessionData>
+    user: UserData | undefined
 }
 
 const DropdownSettings: React.FC<DropdownSettingsProps> = ({
-    isMounted
+    isMounted,
+    session,
+    user
 }) => {
-
-    const session = useSession();
 
     const emailParts = session.email?.split('@');
     const email = emailParts ? emailParts[0] : 'Unknown';
 
     const router = useRouter();
+
+    const [open, setOpen] = useState(false);
+    const [uploading, setUploading] = useState(false);
+    const [image, setImage] = useState<File>()
+    const [displayName, setDisplayName] = useState('');
+
+    const handleUpload = async (e: ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        setImage(file);
+    };
+
+    const onSubmit = async () => {
+        if (image) {
+            try {
+                const storageReference = storageRef(storage, `images/${image.name}`);
+                await uploadBytes(storageReference, image);
+
+                const downloadURL = await getDownloadURL(storageReference);
+                await update(ref(database, `users/${session.uid}`), {
+                    photoURL: downloadURL,
+                    displayName: displayName ? displayName : ""
+                });
+
+                toast.success('Image Uploaded.');
+
+            } catch (error) {
+                console.error('Error uploading image:', error);
+                toast.error('Something went wrong.');
+            } finally {
+                setUploading(false);
+                setOpen(false);
+                setImage(undefined);
+                setDisplayName('');
+            }
+        }
+    }
 
     const signOut = async () => {
         try {
@@ -36,6 +84,7 @@ const DropdownSettings: React.FC<DropdownSettingsProps> = ({
             toast.error('Something went wrong.');
         }
     }
+    // add account page
 
     return (
         <div className="hidden lg:flex gap-2">
@@ -50,17 +99,18 @@ const DropdownSettings: React.FC<DropdownSettingsProps> = ({
                         <DropdownMenuTrigger asChild>
                             <Button className="text-xs font-semibold" variant={"outline"}>
                                 <Avatar className="h-8 w-8 mr-1">
-                                    <AvatarImage src="https://github.com/shadcn.png" />
+                                    <AvatarImage src={`${user?.photoURL ? user.photoURL : 'https://github.com/shadcn.png'}`} />
                                     <AvatarFallback>CN</AvatarFallback>
                                 </Avatar>
-                                {email}
+                                {user?.displayName ? user.displayName : email}
                                 <ChevronDown className="h-4 w-4" />
                             </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent>
-                            <DropdownMenuItem className="font-medium"><SquareUserRound className="h-4 w-4 mr-2" />Account</DropdownMenuItem>
-                            <DropdownMenuItem className="font-medium"><Settings className="h-4 w-4 mr-2" />Settings</DropdownMenuItem>
-                            <DropdownMenuItem className="font-medium"><CircleHelp className="h-4 w-4 mr-2" />Suppport and Help</DropdownMenuItem>
+                        <DropdownMenuContent className="flex flex-col gap-2">
+                            <DropdownMenuItem onClick={() => setOpen(!open)} className="font-medium"><CircleUserRound className="h-4 w-4 mr-2" />Account</DropdownMenuItem>
+                            <Separator />
+                            <DropdownMenuItem onClick={() => router.push('/settings-page')} className="font-medium"><Settings className="h-4 w-4 mr-2" />Settings</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => router.push('/support-page')} className="font-medium"><CircleHelp className="h-4 w-4 mr-2" />Suppport and Help</DropdownMenuItem>
                             <DropdownMenuItem onClick={signOut} className="font-medium">
                                 <Button className="w-full">
                                     <LogOut className="h-4 w-4 mr-2" />Sign out
@@ -71,6 +121,7 @@ const DropdownSettings: React.FC<DropdownSettingsProps> = ({
                     <ModeToggle />
                 </>
             }
+            <ChangeImageAndName open={open} setOpen={setOpen} handleUpload={handleUpload} uploading={uploading} setDisplayName={setDisplayName} displayName={displayName} onSubmit={onSubmit} image={image} />
         </div>
     )
 }

@@ -16,8 +16,9 @@ type Inventory = {
     inventoryName: string
     location: string
     quantity: string
+    baseQuantity: string
     status: string
-  }
+}
 
 const Inventory = () => {
 

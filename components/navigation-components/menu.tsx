@@ -12,8 +12,19 @@ import DropdownSettings from "./dropdown-settings";
 import useMenuModal from "@/hook/use-menu-modal";
 import { Menu } from "lucide-react";
 import useMount from "@/hook/use-mount";
+import { IronSession } from "iron-session";
+import { SessionData } from "@/lib/lib";
+import { UserData } from "../navbar";
 
-const MenuNav = () => {
+interface MenuNavProps {
+    session: IronSession<SessionData>
+    user: UserData | undefined
+}
+
+const MenuNav: React.FC<MenuNavProps> = ({
+    session,
+    user
+}) => {
 
     const { theme } = useTheme();
     const menuModal = useMenuModal();
@@ -51,7 +62,7 @@ const MenuNav = () => {
                     </Link>
             }
             <MainNavigation isMounted={isMounted} />
-            <DropdownSettings isMounted={isMounted} />
+            <DropdownSettings isMounted={isMounted} session={session} user={user} />
             <Menu onClick={() => openMenu()} className="flex lg:hidden hover:scale-110 cursor-pointer transition mr-4" size={30} />
         </>
     )

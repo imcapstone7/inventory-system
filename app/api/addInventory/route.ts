@@ -11,9 +11,17 @@ function generateShortUUID() {
     return uuidv4().replace(/-/g, '').substring(0, 11);
 }
 
+function generateShortUUID1() {
+    return uuidv4().replace(/-/g, '').substring(0, 13);
+}
+
 async function isBarcodeValueUnique(barcodeValue: string) {
-    const snapshot = await get(databaseRef(database, `inventory/${barcodeValue}`));
-    return !snapshot.exists();
+    const snapshot = await get(databaseRef(database, `transport/${barcodeValue}`));
+    if (!snapshot.exists()) {
+        const snapshot1 = await get(databaseRef(database, `inventory/${barcodeValue}`));
+        return !snapshot1.exists();
+    }
+    return false;
 }
 
 export async function POST(
@@ -22,7 +30,7 @@ export async function POST(
     const session = await getSession();
     const body = await req.json();
     const { values } = body;
-    
+
     let barcodeValue: string = '';
     let unique = false;
 
@@ -56,8 +64,15 @@ export async function POST(
             category: values.category,
             contents: values.contents,
             quantity: values.quantity,
+            baseQuantity: values.quantity,
             location: values.location,
             status: values.status,
+            createdAt: Date.now()
+        });
+
+        await set(databaseRef(database, `logs/${generateShortUUID1()}`), {
+            userId: session.uid,
+            action: `Added a data in Inventory`,
             createdAt: Date.now()
         });
 

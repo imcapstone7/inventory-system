@@ -17,13 +17,14 @@ export async function POST(
         const response = await signInWithEmailAndPassword(auth, values.email, values.password);
 
         if (response.user !== null) {
+            const id = response.user.uid;
             session.uid = response.user.uid;
             session.email = response.user.email || '';
             session.photoUrl = response.user.photoURL || '';
             session.isLoggedIn = true;
             await session.save();
 
-            return NextResponse.json({ status: 200});
+            return NextResponse.json({ status: 200, id });
         }
     } catch (error) {
         console.log('SESSION', error);

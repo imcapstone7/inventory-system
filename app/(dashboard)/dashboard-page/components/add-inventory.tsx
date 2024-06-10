@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -13,6 +15,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useTheme } from "next-themes";
 
 const formSchema = z.object({
     inventoryName: z.string().min(1, "Inventory name is required"),
@@ -30,6 +33,7 @@ const AddInventory = () => {
 
     const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(false);
+    const { theme } = useTheme();
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -190,7 +194,7 @@ const AddInventory = () => {
                                 />
                                 <Button disabled={loading} type="submit">
                                     {loading ? (
-                                        <div className="h-6 w-6 rounded-full border-2 border-solid border-white border-e-transparent animate-spin" />
+                                        <div className={`h-6 w-6 rounded-full border-2 border-solid ${theme === 'dark'? 'border-black' : 'border-white'} border-e-transparent animate-spin`} />
                                     ) : (
                                         'Submit'
                                     )}

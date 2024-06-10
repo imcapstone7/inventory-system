@@ -18,7 +18,7 @@ export default async function mainLayout({
     return (
         <SessionProvider session={session}>
             <div className="h-full w-full">
-                <Navbar />
+                <Navbar session={session} />
                 {children}
                 <Footer />
             </div>

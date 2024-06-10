@@ -46,7 +46,7 @@ const SignInForm: React.FC<SignInFormProps> = ({
                         </FormItem>
                     )}
                 />
-                <div className="relative flex">
+                <div className="relative flex w-full">
                     <FormField
                         control={form.control}
                         name="password"

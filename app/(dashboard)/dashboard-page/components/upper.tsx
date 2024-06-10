@@ -1,13 +1,19 @@
 "use client"
 
 import { useSession } from "@/app/session-context";
-import { Button } from "@/components/ui/button";
-import { Truck } from "lucide-react";
 import AddInventory from "./add-inventory";
 import useMount from "@/hook/use-mount";
 import { Skeleton } from "@/components/ui/skeleton";
+import AddTransports from "../../transports-page/components/add-transports";
+import { Inventory } from "./columns";
 
-const Upper = () => {
+interface UpperProps {
+    data: Inventory[]
+}
+
+const Upper: React.FC<UpperProps> = ({
+    data
+}) => {
 
     const session = useSession();
     const { isMounted } = useMount();
@@ -45,7 +51,7 @@ const Upper = () => {
                     :
                     <div className="flex gap-2">
                         <AddInventory />
-                        <Button className="text-xs bg-[#fb4c0a]"><Truck className="h-4 w-4 mr-1" />Create Transports</Button>
+                        <AddTransports data={data} />
                     </div>
             }
         </div>

@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import useMount from "@/hook/use-mount";
@@ -6,6 +8,8 @@ import AddInventory from "../../dashboard-page/components/add-inventory";
 import { Inventory } from "./columns";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { useTheme } from "next-themes";
+import { useState } from "react";
 
 interface UpperProps {
     data: Inventory[]
@@ -15,7 +19,9 @@ const Upper: React.FC<UpperProps> = ({
     data
 }) => {
 
+    const { theme } = useTheme();
     const { isMounted } = useMount();
+    const [loading, setLoading] = useState(false);
 
     const dataWithCreatedAtAsString = data.map(item => ({
         ...item,
@@ -24,22 +30,23 @@ const Upper: React.FC<UpperProps> = ({
 
     const generateReport = async () => {
         try {
-
-            const response = await axios.post('/api/generatePdfReport', dataWithCreatedAtAsString , { responseType: 'blob' });
+            setLoading(true);
+            const response = await axios.post('/api/generatePdfReport', dataWithCreatedAtAsString, { responseType: 'blob' });
 
             // Create URL for PDF blob
             const url = window.URL.createObjectURL(new Blob([response.data]));
-
             // Create anchor element to trigger download
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'report.pdf';
+            a.download = 'report(INVENTORY).pdf';
             document.body.appendChild(a);
             a.click();
             a.remove();
         } catch (error) {
             console.error('Error generating report:', error);
             toast.error('Error generating report.');
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -72,7 +79,11 @@ const Upper: React.FC<UpperProps> = ({
                     :
                     <div className="flex gap-2">
                         <AddInventory />
-                        <Button onClick={generateReport} className="text-xs bg-[#fb4c0a]"><FileText className="h-4 w-4 mr-1" />Generate Report</Button>
+                        <Button onClick={generateReport} className="text-xs bg-[#fb4c0a]">
+                            {loading ? (
+                                <div className={`h-6 w-6 rounded-full border-2 border-solid ${theme === 'dark' ? 'border-black' : 'border-white'} border-e-transparent animate-spin`} />
+                            ) :
+                                (<><FileText className="h-4 w-4 mr-1" />Generate Report</>)}</Button>
                     </div>
             }
         </div>

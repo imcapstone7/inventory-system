@@ -10,33 +10,37 @@ import Image from "next/image";
 
 import laptop from "@/public/assets/images/laptop.png";
 import { Slider } from "@/components/ui/slider";
+import { Transport } from "../../transports-page/components/column";
 
-const AlmostCompleted = () => {
+interface AlmostCompletedProps {
+    allData: Transport[]
+}
+
+const AlmostCompleted: React.FC<AlmostCompletedProps> = ({
+    allData
+}) => {
+
+    const latestTransports = allData.slice().sort((a, b) => b.createdAt - a.createdAt).slice(0, 5);
+
     return (
         <Carousel className="w-7/12 max-w-xs">
             <CarouselContent>
-                {Array.from({ length: 5 }).map((_, index) => (
+                {latestTransports.map((transport, index) => (
                     <CarouselItem key={index}>
                         <div className="p-1">
                             <Card>
                                 <CardContent className="flex flex-col gap-1 aspect-square p-4">
-                                    <div className="text-md font-bold">
-                                        Electronics
-                                    </div>
-                                    <div className="relative aspect-square h-32 md:h-28 border border-1 w-full">
-                                        <Image className="object-cover object-center" src={laptop} alt="" />
+                                    <div className="relative aspect-square h-32 md:h-[70px] border border-1 w-full">
+                                        <Image className="object-cover object-center" width={210} height={210} src={transport.barcodeImageUrl} alt="" />
                                     </div>
                                     <div className="text-lg font-extrabold">
-                                        TRK12345052
+                                        {transport.item}
                                     </div>
                                     <div className="text-xs font-semibold text-gray-500">
-                                        Warehouse A
+                                        {transport.receiver}
                                     </div>
-                                    <div className="flex justify-between gap-2 mb-2">
-                                        <Slider disabled className="mt-1 w-10/12" value={[65]} max={100} step={1} />
-                                        <div className="text-xs font-semibold">
-                                            70%
-                                        </div>
+                                    <div className={`text-xs font-semibold ${transport.status === 'Borrowed' ? 'text-yellow-500' : 'text-green-500'}`}>
+                                        {transport.status}
                                     </div>
                                 </CardContent>
                             </Card>

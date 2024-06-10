@@ -11,7 +11,6 @@ const MiddleChart = () => {
             <BarChart className='-translate-x-16' data={data} layout="vertical">
                 <XAxis className='hidden' type="number" />
                 <YAxis className='hidden'  type="category" />
-                <Tooltip />
                 <Bar dataKey="uv" stackId="a" fill="#fb4c0a" />
                 <Bar dataKey="pv" stackId="a" fill="#D3D3D3" />
                 <Bar dataKey="iv" stackId="a" fill="#A3A3A3" />

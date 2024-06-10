@@ -10,11 +10,12 @@ import toast from "react-hot-toast";
 import axios from "axios";
 import Inventory from "../inventory-page/page";
 import { searchSchema } from "@/lib/types";
+import { Transport } from "../transports-page/components/column";
 
 const Tracking = () => {
 
     const [loadingSearch, setLoadingSearch] = useState(false);
-    const [data, setData] = useState<Inventory>();
+    const [data, setData] = useState<Inventory | Transport>();
 
     const form = useForm<z.infer<typeof searchSchema>>({
         resolver: zodResolver(searchSchema),

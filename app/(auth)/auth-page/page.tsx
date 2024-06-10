@@ -8,9 +8,9 @@ import 'swiper/css/autoplay';
 import 'swiper/css/controller';
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import authPic1 from "@/public/assets/images/auth-pic-1.jpg";
-import authPic2 from "@/public/assets/images/auth-pic-2.jpg"
-import authPic3 from "@/public/assets/images/auth-pic-3.jpg"
+import authPic1 from "@/public/assets/images/philsca-pic-1.jpg";
+import authPic2 from "@/public/assets/images/philsca-pic-2.jpg"
+import authPic3 from "@/public/assets/images/philsca-pic-3.jpg"
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { CircleUserRound, LogIn } from "lucide-react";
@@ -29,6 +29,8 @@ import useSession from "@/hook/use-session";
 import { useRouter } from "next/navigation";
 import axios from 'axios';
 import { createSchema, loginSchema } from "@/lib/types";
+import Bowser from "bowser";
+import { v4 as uuidv4 } from "uuid";
 
 const auth = getAuth(app);
 
@@ -74,6 +76,21 @@ export default function Page() {
         },
     });
 
+    function getOSName() {
+        const OS = Bowser.getParser(window.navigator.userAgent);
+        return OS.getOSName();
+    }
+
+    function getBrowserName() {
+        const browser = Bowser.getParser(window.navigator.userAgent);
+        return browser.getBrowserName();
+    }
+
+    function generateShortUUID() {
+        return uuidv4().replace(/-/g, '').substring(0, 11);
+    }
+
+
     const onLogin = async (values: z.infer<typeof loginSchema>) => {
         setLoading(true);
         try {
@@ -81,6 +98,15 @@ export default function Page() {
             const response = await axios.post('/api/session', { values });
 
             if (response.data.status === 200) {
+                const OS = getOSName();
+                const Browser = getBrowserName();
+
+                await set(ref(database, `users/${response.data.id}/history/${generateShortUUID()}`), {
+                    osUsed: OS,
+                    browserUsed: Browser,
+                    createdAt: Date.now()
+                });
+
                 formLogin.reset();
                 setTabValue('login');
                 router.push('/dashboard-page');
@@ -93,32 +119,32 @@ export default function Page() {
         }
     }
 
-    const onCreateAccount = async (values: z.infer<typeof createSchema>) => {
-        setLoading(true);
-        try {
-            const response = await createUserWithEmailAndPassword(auth, values.email, values.password);
-            if (response.user) {
-                //uid,email,displayName,photoURL,reloadUserInfo:passwordHash,metaData:creationTime,metaData:lastSignInTime
-                await set(ref(database, 'users/' + response.user.uid), {
-                    email: response.user.email || '',
-                    dislayName: response.user.displayName || '',
-                    photoURL: response.user.photoURL || '',
-                    passwordHash: (response.user as any).reloadUserInfo.passwordHash || '',
-                    creationTime: response.user.metadata.creationTime || '',
-                    lastSignInTime: response.user.metadata.lastSignInTime || ''
-                });
+    // const onCreateAccount = async (values: z.infer<typeof createSchema>) => {
+    //     setLoading(true);
+    //     try {
+    //         const response = await createUserWithEmailAndPassword(auth, values.email, values.password);
+    //         if (response.user) {
+    //             //uid,email,displayName,photoURL,reloadUserInfo:passwordHash,metaData:creationTime,metaData:lastSignInTime
+    //             await set(ref(database, 'users/' + response.user.uid), {
+    //                 email: response.user.email || '',
+    //                 displayName: response.user.displayName || '',
+    //                 photoURL: response.user.photoURL || '',
+    //                 passwordHash: (response.user as any).reloadUserInfo.passwordHash || '',
+    //                 creationTime: response.user.metadata.creationTime || '',
+    //                 lastSignInTime: response.user.metadata.lastSignInTime || ''
+    //             });
 
-                toast.success('User created.');
-                setTabValue('login');
-                formLogin.reset();
-            }
-        } catch (error) {
-            console.log(error);
-            toast.error('Something went wrong.');
-        } finally {
-            setLoading(false);
-        }
-    }
+    //             toast.success('User created.');
+    //             setTabValue('login');
+    //             formLogin.reset();
+    //         }
+    //     } catch (error) {
+    //         console.log(error);
+    //         toast.error('Something went wrong.');
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // }
 
     return (
         <div className="flex justify-center items-center lg:grid lg:grid-cols-12 h-screen">
@@ -127,7 +153,19 @@ export default function Page() {
                     <div className="flex justify-end w-full">
                         <ModeToggle />
                     </div>
-                    <Tabs value={tabValue} className="w-full">
+                    <div className="flex flex-col px-2 mt-6 w-[350px] lg:w-[400px]">
+                        <div className="text-2xl font-medium">
+                            Welcome back!
+                            <span className="ml-1 font-extrabold">User</span>
+                        </div>
+                        <div className="text-xs text-gray-500 font-semibold">
+                            Get into your dashboard
+                        </div>
+                        <div className="mt-6">
+                            <SignInForm form={formLogin} onLogin={onLogin} />
+                        </div>
+                    </div>
+                    {/* <Tabs value={tabValue} className="w-full">
                         <TabsList className="h-14 w-[350px] lg:w-[400px] px-2">
                             <TabsTrigger onClick={() => setTabValue('login')} className="h-10 w-[200px] data-[state=active]:bg-[#020712] data-[state=active]:text-white" value="login"><LogIn className="h-4 w-4 mr-2" /> Login</TabsTrigger>
                             <TabsTrigger onClick={() => setTabValue('create')} className="h-10 w-[200px] data-[state=active]:bg-[#020712] data-[state=active]:text-white" value="create"><CircleUserRound className="h-4 w-4 mr-2" />Create Account</TabsTrigger>
@@ -155,7 +193,7 @@ export default function Page() {
                                 <SignUpForm loading={loading} form={form1} onCreateAccount={onCreateAccount} />
                             </div>
                         </TabsContent>
-                    </Tabs>
+                    </Tabs> */}
                 </div>
             </div>
             <div className="col-span-6 hidden lg:block">

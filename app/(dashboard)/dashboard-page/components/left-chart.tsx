@@ -29,7 +29,6 @@ const LeftChart = () => {
                         <Cell key={`cell-${index}`} fill={barColors[index % barColors.length]} />
                     ))}
                 </Bar>
-                <Tooltip />
             </BarChart>
         </ResponsiveContainer>
     );

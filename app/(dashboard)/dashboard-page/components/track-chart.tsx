@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { PieChart, Pie, Sector, ResponsiveContainer } from 'recharts';
+import { Transport } from '../../transports-page/components/column';
 
 interface RenderActiveShapeProps {
     cx: number;
@@ -14,11 +15,6 @@ interface RenderActiveShapeProps {
     percent: number;
     value: number;
 }
-
-const data = [
-    { name: 'Borrowed', value: 400, fill: '#A3A3A3' },
-    { name: 'Returned', value: 200, fill: '#fb4c0a' },
-];
 
 const renderActiveShape = (props: RenderActiveShapeProps) => {
     const RADIAN = Math.PI / 180;
@@ -73,14 +69,21 @@ const renderActiveShape = (props: RenderActiveShapeProps) => {
     );
 };
 
+interface ExampleProps {
+    allData: Transport[];
+}
+
 interface ExampleState {
     activeIndex: number;
 }
 
-export default class Example extends PureComponent<{}, ExampleState> {
-    state: ExampleState = {
-        activeIndex: 0,
-    };
+export default class Example extends PureComponent<ExampleProps, ExampleState> {
+    constructor(props: ExampleProps) {
+        super(props);
+        this.state = {
+            activeIndex: 0,
+        };
+    }
 
     onPieEnter = (_: any, index: number) => {
         this.setState({
@@ -89,6 +92,17 @@ export default class Example extends PureComponent<{}, ExampleState> {
     };
 
     render() {
+
+        const { allData } = this.props;
+        // Check if allData is defined before using it
+        const borrowedCount = allData ? allData.filter(item => item.status === "Borrowed").length : 0;
+        const returnedCount = allData ? allData.filter(item => item.status === "Returned").length : 0;
+        
+        const data = [
+            { name: 'Borrowed', value: borrowedCount, fill: '#A3A3A3' },
+            { name: 'Returned', value: returnedCount, fill: '#fb4c0a' },
+        ];
+
         return (
             <ResponsiveContainer width="100%" height={170}>
                 <PieChart width={200} height={200}>

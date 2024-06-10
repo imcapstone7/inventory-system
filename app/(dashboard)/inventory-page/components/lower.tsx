@@ -6,11 +6,14 @@ import { useState } from "react";
 import { Inventory, columns } from "./columns";
 import { SortingState, VisibilityState, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
-import { SlidersVertical } from "lucide-react";
+import { Printer, SlidersVertical } from "lucide-react";
 import useMount from "@/hook/use-mount";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import axios from "axios";
+import toast from "react-hot-toast";
 
-interface LowerProps{
+interface LowerProps {
     data: Inventory[]
 }
 
@@ -21,6 +24,7 @@ const Lower: React.FC<LowerProps> = ({
     const { isMounted } = useMount();
 
     const { theme } = useTheme();
+    const [loading, setLoading] = useState(false);
     const [globalFilter, setGlobalFilter] = useState('');
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
     const [sorting, setSorting] = useState<SortingState>([])
@@ -41,6 +45,33 @@ const Lower: React.FC<LowerProps> = ({
             sorting,
         },
     });
+
+    const dataWithCreatedAtAsString = data.map(item => ({
+        ...item,
+        createdAt: String(item.createdAt) // or item.createdAt.toString()
+    }));
+
+    const printBarcode = async () => {
+        try {
+            setLoading(true);
+            const response = await axios.post('/api/printBarcode', dataWithCreatedAtAsString, { responseType: 'blob' });
+
+            // Create URL for PDF blob
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            // Create anchor element to trigger download
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'barcodes(INVENTORY).pdf';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+        } catch (error) {
+            console.error('Error generating barcodes:', error);
+            toast.error('Error generating barcodes.');
+        } finally {
+            setLoading(false);
+        }
+    }
 
     return (
         <>
@@ -88,6 +119,22 @@ const Lower: React.FC<LowerProps> = ({
                                             })}
                                     </DropdownMenuContent>
                                 </DropdownMenu>
+                                <TooltipProvider>
+                                    <Tooltip>
+                                        <TooltipTrigger asChild>
+                                            <Button disabled={loading} onClick={printBarcode} size={"icon"} className="bg-[#fb4c0a]">
+                                                {loading ? (
+                                                    <div className={`h-6 w-6 rounded-full border-2 border-solid ${theme === 'dark' ? 'border-black' : 'border-white'} border-e-transparent animate-spin`} />
+                                                ) :
+                                                    <Printer className="h-6 w-6" />
+                                                }
+                                            </Button>
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                            <p className="font-bold">Print the barcodes</p>
+                                        </TooltipContent>
+                                    </Tooltip>
+                                </TooltipProvider>
                             </div>
                         </div>
                         <DataTable columns={columns} data={data} globalFilter={globalFilter} setGlobalFilter={setGlobalFilter} columnVisibility={columnVisibility} setColumnVisibility={setColumnVisibility} table={table} />

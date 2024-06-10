@@ -22,14 +22,54 @@ import { Button } from "@/components/ui/button";
 import useMount from "@/hook/use-mount";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useTheme } from "next-themes";
+import { DataState } from "../page";
 
-const Lower = () => {
+interface LowerProps {
+    allData: DataState
+}
 
+const Lower: React.FC<LowerProps> = ({
+    allData
+}) => {
+
+    const { inventory, transport } = allData;
     const { isMounted } = useMount();
     const { theme } = useTheme();
     const [data, setData] = useState<Inventory[]>([]);
     const [globalFilter, setGlobalFilter] = useState('');
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
+
+    const calculateBorrowedPercentage = () => {
+        const borrowedCount = transport.filter(item => item.status === "Borrowed").length;
+
+        // Calculate the percentage
+        const totalTransportCount = transport.length;
+        const borrowedPercentage = (borrowedCount / totalTransportCount) * 100;
+
+        return borrowedPercentage.toFixed(2);
+    };
+
+    const getTotalInventory = () => {
+        const inventoryCount = inventory.length;
+
+        return inventoryCount;
+    };
+
+    const calculateReturnedPercentage = () => {
+        const returnedCount = transport.filter(item => item.status === "Returned").length;
+
+        // Calculate the percentage
+        const totalTransportCount = transport.length;
+        const returnedPercentage = (returnedCount / totalTransportCount) * 100;
+
+        return returnedPercentage.toFixed(2);
+    };
+
+    const getTotalTransports = () => {
+        const transportCount = transport.length;
+
+        return transportCount;
+    };
 
     const table = useReactTable({
         data,
@@ -100,7 +140,7 @@ const Lower = () => {
                                     <div className="flex items-center justify-between mt-4">
                                         <LeftChart />
                                         <div className="text-4xl font-bold">
-                                            92%
+                                            {calculateBorrowedPercentage() + '%'}
                                         </div>
                                     </div>
                                 </div>
@@ -121,7 +161,7 @@ const Lower = () => {
                                     <div className="relative flex justify-evenly mt-4">
                                         <MiddleChart />
                                         <div className="absolute text-4xl font-bold right-0 top-1">
-                                            547
+                                            {getTotalInventory()}
                                         </div>
                                     </div>
                                 </div>
@@ -142,7 +182,7 @@ const Lower = () => {
                                     <div className="flex items-center justify-between mt-4">
                                         <LeftChart />
                                         <div className="text-4xl font-bold">
-                                            86%
+                                            {calculateReturnedPercentage() + '%'}
                                         </div>
                                     </div>
                                 </div>
@@ -204,16 +244,16 @@ const Lower = () => {
                     <div className="col-span-3 flex flex-col gap-2">
                         <div className={`${theme === 'dark' ? ' bg-[#172030]' : 'bg-[#F4F4F4]'} p-4 rounded-lg`}>
                             <div className="text-xl font-semibold">
-                                Total Shipment
+                                Total Transports
                             </div>
                             <div className="flex items-center gap-2">
                                 <Container className="h-28 w-28" />
                                 <div className="text-3xl font-bold">
-                                    452 items
+                                    {getTotalTransports() + ' item/s'}
                                 </div>
                             </div>
                             <div className="text-xs font-medium text-gray-500 mt-2">
-                                The total number of shipments currently managed in the system.
+                                The total number of transports currently managed in the system.
                             </div>
                         </div>
                         <div className={`${theme === 'dark' ? ' bg-[#172030]' : 'bg-[#F4F4F4]'}  p-4 rounded-lg`}>
@@ -221,14 +261,14 @@ const Lower = () => {
                                 Tracking
                             </div>
                             <div>
-                                <TrackChart />
+                                <TrackChart allData={allData.transport} />
                             </div>
                             <div className="mt-2 flex flex-col gap-4">
                                 <div className="font-semibold">
                                     Latest Borrowed/Returned
                                 </div>
                                 <div className="flex justify-center items-center">
-                                    <AlmostCompleted />
+                                    <AlmostCompleted allData={allData.transport} />
                                 </div>
                             </div>
                         </div>

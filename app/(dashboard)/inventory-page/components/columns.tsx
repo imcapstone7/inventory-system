@@ -6,6 +6,7 @@ import { format } from 'date-fns';
 import { ArrowUpDown } from "lucide-react"
 import { Button } from "@/components/ui/button";
 import RowAction from "./row-action";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 
 // This type is used to define the shape of our data.
@@ -20,6 +21,7 @@ export type Inventory = {
   inventoryName: string
   location: string
   quantity: string
+  baseQuantity: string
   status: string
 }
 
@@ -32,9 +34,16 @@ export const columns: ColumnDef<Inventory>[] = [
     accessorKey: "barcodeImageUrl",
     header: "Barcode",
     cell: ({ row }) => (
-      <div className="w-[80px] h-auto hover:scale-150 cursor-pointer transition">
-        <Image src={row.original.barcodeImageUrl} width={100} height={100} alt="Barcode" quality={100} />
-      </div>
+      <Popover>
+        <PopoverTrigger asChild>
+          <div className="w-[80px] h-auto hover:scale-150 cursor-pointer transition">
+            <Image src={row.original.barcodeImageUrl} width={100} height={100} alt="Barcode" quality={100} />
+          </div>
+        </PopoverTrigger>
+        <PopoverContent>
+          <Image src={row.original.barcodeImageUrl} width={350} height={350} alt="Barcode" quality={100} />
+        </PopoverContent>
+      </Popover>
     ),
   },
   {

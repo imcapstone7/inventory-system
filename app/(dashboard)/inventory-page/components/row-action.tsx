@@ -155,7 +155,7 @@ const RowAction: React.FC<RowActionProps> = ({
             });
 
             if (response.data.status === 200) {
-                toast.success("Data changed.");
+                toast.success("Data has been deleted.");
             }
         } catch (error) {
             console.log(error);
