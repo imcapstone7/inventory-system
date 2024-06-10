@@ -33,7 +33,7 @@ const Lower = () => {
                                 <AccordionItem value="item-2">
                                     <AccordionTrigger>How can I update the quantity of an existing item?</AccordionTrigger>
                                     <AccordionContent className="relative">
-                                        <p>Go to the <span className="italic text-[#fb4c0a]">"Inventory"</span>, and find &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; in the table and click it to edit the quantity of an item.</p>
+                                        <p>Go to the <span className="italic text-[#fb4c0a]">&quot;Inventory&quot;</span>, and find &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; in the table and click it to edit the quantity of an item.</p>
                                         <span className="absolute top-1 right-[284px] italic text-[#fb4c0a] flex flex-row"><MoreHorizontal className="h-4 w-4" /></span>
                                     </AccordionContent>
                                 </AccordionItem>
@@ -64,13 +64,13 @@ const Lower = () => {
                                 <AccordionItem value="item-2">
                                     <AccordionTrigger>How do I track borrowed and returned items?</AccordionTrigger>
                                     <AccordionContent>
-                                        Go to the <span className="italic text-[#fb4c0a]">"Dashboard"</span> and find the pie-graph.
+                                        Go to the <span className="italic text-[#fb4c0a]">&quot;Dashboard&quot;</span> and find the pie-graph.
                                     </AccordionContent>
                                 </AccordionItem>
                                 <AccordionItem value="item-3">
                                     <AccordionTrigger>How do I change the theme of the inventory system?</AccordionTrigger>
                                     <AccordionContent>
-                                        Go to the upper-right corner of the page and click your name, and click the <span className="italic text-[#fb4c0a]">"Settings"</span> to change your theme preferences.
+                                        Go to the upper-right corner of the page and click your name, and click the <span className="italic text-[#fb4c0a]">&quot;Settings&quot;</span> to change your theme preferences.
                                     </AccordionContent>
                                 </AccordionItem>
                                 <AccordionItem value="item-4">
