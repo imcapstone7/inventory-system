@@ -40,8 +40,8 @@ const Upper: React.FC<UpperProps> = ({
                     ...inventoryData[key]
                 }));
 
-                const sortedData = inventoryArray.sort((a, b) => b.createdAt - a.createdAt).slice(0, 6);
-                setData(sortedData);
+                // const sortedData = inventoryArray.sort((a, b) => b.createdAt - a.createdAt).slice(0, 6);
+                setData(inventoryArray);
             }
         };
 
