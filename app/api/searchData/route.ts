@@ -36,6 +36,7 @@ export async function POST(
                     id: values.search,
                     barcodeImageUrl: snapData.barcodeImageUrl,
                     user: snapData.user,
+                    itemId: snapData.itemId,
                     item: snapData.item,
                     receiver: snapData.receiver,
                     purpose: snapData.purpose,
