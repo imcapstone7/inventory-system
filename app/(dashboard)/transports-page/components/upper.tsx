@@ -55,7 +55,7 @@ const Upper: React.FC<UpperProps> = ({
 
     const dataWithCreatedAtAsString = dataTransport.map(item => ({
         ...item,
-        createdAt: String(format(item.createdAt, 'MMM dd, yyyy'))
+        createdAt: String(format(item.returnDate, 'MMM dd, yyyy'))
     }));
 
     const generateReport = async () => {
