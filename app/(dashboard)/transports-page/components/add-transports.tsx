@@ -28,6 +28,7 @@ interface AddTransportsProps {
 const formSchema = z.object({
     receiver: z.string().min(1, "Receiver name is required"),
     purpose: z.string().min(1, "Purpose is required"),
+    itemId: z.string(),
     item: z.string().min(1, "Item is required"),
     returnDate: z.preprocess((arg) => {
         if (typeof arg === "string" || arg instanceof Date) {
@@ -51,6 +52,7 @@ const AddTransports: React.FC<AddTransportsProps> = ({
         defaultValues: {
             receiver: "",
             purpose: "",
+            itemId: "",
             item: undefined,
             returnDate: undefined,
             returnTime: undefined
@@ -121,7 +123,11 @@ const AddTransports: React.FC<AddTransportsProps> = ({
                                         <FormItem>
                                             <FormLabel>Item</FormLabel>
                                             <FormControl>
-                                                <Select value={field.value} defaultValue={field.value} onValueChange={field.onChange}>
+                                                <Select value={field.value} defaultValue={field.value} onValueChange={(value) => {
+                                                    const selectedItem = data.find(item => item.contents === value);
+                                                    field.onChange(value);
+                                                    form.setValue("itemId", selectedItem?.id || "");
+                                                }}>
                                                     <SelectTrigger>
                                                         <SelectValue defaultValue={field.value} placeholder="Select a status" />
                                                     </SelectTrigger>
@@ -200,7 +206,7 @@ const AddTransports: React.FC<AddTransportsProps> = ({
                                 </div>
                                 <Button disabled={loading} type="submit">
                                     {loading ? (
-                                        <div className={`h-6 w-6 rounded-full border-2 border-solid ${theme === 'dark'? 'border-black' : 'border-white'} border-e-transparent animate-spin`} />
+                                        <div className={`h-6 w-6 rounded-full border-2 border-solid ${theme === 'dark' ? 'border-black' : 'border-white'} border-e-transparent animate-spin`} />
                                     ) : (
                                         'Submit'
                                     )}

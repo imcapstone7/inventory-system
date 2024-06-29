@@ -1,6 +1,6 @@
 import { database } from "@/firebase";
 import { format, parse, parseISO } from "date-fns";
-import { ref, update } from "firebase/database";
+import { get, ref, update } from "firebase/database";
 import { NextResponse } from "next/server";
 
 export async function POST(
@@ -28,6 +28,22 @@ export async function POST(
             status: values.status,
             returnDate: `${formattedDate} ${formattedTime}`
         });
+
+        const inventoryRef = ref(database, `inventory/${values.itemId}`);
+        const inventorySnapshot = await get(inventoryRef);
+
+        if (!inventorySnapshot.exists()) {
+            throw new Error('Inventory item does not exist');
+        }
+
+        const currentQuantity = inventorySnapshot.val().quantity;
+        const newQuantity = currentQuantity + 1;
+
+        // Update inventory quantity
+        await update(inventoryRef, {
+            quantity: newQuantity
+        });
+
 
         return NextResponse.json({ status: 200 });
 

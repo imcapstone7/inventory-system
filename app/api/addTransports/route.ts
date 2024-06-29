@@ -1,6 +1,6 @@
 import { database, storage } from "@/firebase";
 import { getSession } from "@/lib/action";
-import { ref as databaseRef, get, set } from "firebase/database";
+import { ref as databaseRef, get, set, update } from "firebase/database";
 import { ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage";
 import { NextResponse } from "next/server";
 import { v4 as uuidv4 } from "uuid";
@@ -66,12 +66,28 @@ export async function POST(
         await set(databaseRef(database, `transport/${barcodeValue}`), {
             barcodeImageUrl: barcodeImageUrl,
             user: session.email,
+            itemId: values.itemId,
             item: values.item,
             receiver: values.receiver,
             purpose: values.purpose,
             createdAt: Date.now(),
             status: 'Borrowed',
             returnDate: `${formattedDate} ${formattedTime}`,
+        });
+
+        const inventoryRef = databaseRef(database, `inventory/${values.itemId}`);
+        const inventorySnapshot = await get(inventoryRef);
+
+        if (!inventorySnapshot.exists()) {
+            throw new Error('Inventory item does not exist');
+        }
+
+        const currentQuantity = inventorySnapshot.val().quantity;
+        const newQuantity = currentQuantity - 1;
+
+        // Update inventory quantity
+        await update(inventoryRef, {
+            quantity: newQuantity
         });
 
         await set(databaseRef(database, `logs/${generateShortUUID1()}`), {

@@ -13,6 +13,7 @@ export type Transport = {
     id: string
     barcodeImageUrl: string
     user: string
+    itemId: string
     item: string
     receiver: string
     purpose: string

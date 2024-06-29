@@ -25,7 +25,6 @@ import { database } from "@/firebase";
 import Inventory from "../../inventory-page/page";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
-import { useRouter } from "next/navigation";
 
 interface RowActionProps {
     row: Row<Transport>
@@ -34,6 +33,7 @@ interface RowActionProps {
 const formSchema1 = z.object({
     receiver: z.string().min(1, "Receiver name is required"),
     purpose: z.string().min(1, "Purpose is required"),
+    itemId: z.string(),
     item: z.string().min(1, "Item is required"),
     returnDate: z.preprocess((arg) => {
         if (typeof arg === "string" || arg instanceof Date) {
@@ -70,8 +70,8 @@ const RowAction: React.FC<RowActionProps> = ({
                     ...inventoryData[key]
                 }));
 
-                const sortedData = inventoryArray.sort((a, b) => b.createdAt - a.createdAt).slice(0, 6);
-                setData(sortedData);
+                // const sortedData = inventoryArray.sort((a, b) => b.createdAt - a.createdAt).slice(0, 6);
+                setData(inventoryArray);
             }
         };
 
@@ -108,6 +108,7 @@ const RowAction: React.FC<RowActionProps> = ({
         defaultValues: {
             receiver: row.original.receiver,
             purpose: row.original.purpose,
+            itemId: row.original.itemId,
             item: row.original.item,
             returnDate: formatDateToISO(row.original.returnDate),
             returnTime: formatTimeToISO(row.original.returnDate),
@@ -222,7 +223,11 @@ const RowAction: React.FC<RowActionProps> = ({
                                             <FormItem>
                                                 <FormLabel>Item</FormLabel>
                                                 <FormControl>
-                                                    <Select value={field.value} defaultValue={field.value} onValueChange={field.onChange}>
+                                                    <Select value={field.value} defaultValue={field.value} onValueChange={(value) => {
+                                                        const selectedItem = data.find(item => item.contents === value);
+                                                        field.onChange(value);
+                                                        form1.setValue("itemId", selectedItem?.id || "");
+                                                    }}>
                                                         <SelectTrigger>
                                                             <SelectValue defaultValue={field.value} placeholder="Select a status" />
                                                         </SelectTrigger>
