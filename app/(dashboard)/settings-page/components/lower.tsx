@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { SessionData } from "@/lib/lib";
 import { IronSession } from "iron-session";
-import { ChevronsUpDown, SlidersVertical } from "lucide-react";
+import { Check, ChevronsUpDown, SlidersVertical, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { onValue, ref } from "firebase/database";
 import { database } from "@/firebase";
@@ -18,9 +18,20 @@ import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMe
 import Delete from "./delete";
 import useMount from "@/hook/use-mount";
 import { Skeleton } from "@/components/ui/skeleton";
+import toast from "react-hot-toast";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import { useTheme } from "next-themes";
 
 interface LowerProps {
     session: IronSession<SessionData>
+}
+
+type Verification = {
+    id: string
+    email: string;
+    creationTime: string;
+    verified: boolean
 }
 
 type History = {
@@ -32,16 +43,21 @@ type History = {
 const Lower: React.FC<LowerProps> = ({
     session
 }) => {
-
+    const { theme } = useTheme();
+    const router = useRouter();
     const { isMounted } = useMount();
     const [isOpen, setIsOpen] = useState(false)
 
     const [data, setData] = useState<History[]>([]);
     const [dataLogs, setDataLogs] = useState<Logs[]>([]);
+    const [dataVerify, setDataVerify] = useState<Verification[]>([]);
 
     const [globalFilter, setGlobalFilter] = useState('');
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
     const [sorting, setSorting] = useState<SortingState>([])
+
+    const [deleteLoading, setDeleteLoading] = useState(false);
+    const [verifyLoading, setVerifyLoading] = useState(false);
 
     const table = useReactTable({
         data: dataLogs,
@@ -86,6 +102,30 @@ const Lower: React.FC<LowerProps> = ({
 
     useEffect(() => {
 
+        const verifyDataRef = ref(database, 'mobile/users');
+
+        const fetchData = (snapshot: any) => {
+            const verifyData = snapshot.val();
+            if (verifyData) {
+                const verifyArray: Verification[] = Object.keys(verifyData).map(key => ({
+                    id: key,
+                    ...verifyData[key]
+                }));
+
+                setDataVerify(verifyArray);
+            }
+        };
+
+        onValue(verifyDataRef, fetchData);
+
+        return () => {
+            // Unsubscribe from the real-time listener when component unmounts
+            onValue(verifyDataRef, fetchData);
+        };
+    }, []);
+
+    useEffect(() => {
+
         const inventoryRef = ref(database, `users/${session.uid}/history`);
 
         const fetchData = (snapshot: any) => {
@@ -107,6 +147,48 @@ const Lower: React.FC<LowerProps> = ({
             onValue(inventoryRef, fetchData);
         };
     }, []);
+
+    const onVerify = async (id: string) => {
+        try {
+            setVerifyLoading(true);
+
+            const response = await axios.post('/api/verifyUser', {
+                id
+            });
+
+            if (response.data.status === 200) {
+                toast.success('Account Verified');
+                router.refresh();
+            }
+        } catch (error) {
+            console.log(error);
+            toast.error('Something went wrong.');
+        }
+        finally {
+            setVerifyLoading(false);
+        }
+    }
+
+    const onDelete = async (id: string) => {
+        try {
+            setDeleteLoading(true);
+
+            const response = await axios.post('/api/deleteUser', {
+                id
+            });
+
+            if (response.data.status === 200) {
+                toast.success('Account Deleted');
+                router.refresh();
+            }
+        } catch (error) {
+            console.log(error);
+            toast.error('Something went wrong.');
+        }
+        finally {
+            setDeleteLoading(false);
+        }
+    }
 
     return (
         <> {
@@ -192,6 +274,58 @@ const Lower: React.FC<LowerProps> = ({
                                 ))}
                             </CollapsibleContent>
                         </Collapsible>
+                        <div className="flex flex-col gap-2">
+                            <div className="relative text-lg font-bold ml-3">
+                                User Verification
+                                {
+                                    dataVerify.filter(data => data.verified === false).length === 0 ?
+                                        ''
+                                        :
+                                        < div className="absolute left-40 top-0 bg-red-500 p-1 px-2 rounded-full text-xs">
+                                            <div>{dataVerify.filter(data => data.verified === false).length}</div>
+                                        </div>
+                                }
+                            </div>
+                            {
+                                dataVerify.every(data => data.verified) ?
+                                    <div className="text-xs text-gray-500 italic ml-3">
+                                        There is no user to verify for now...
+                                    </div>
+                                    :
+                                    <div className="flex flex-col gap-2">
+                                        {dataVerify.map((data, index) => (
+                                            <div key={index} className="flex border rounded-md w-fit p-4">
+                                                <div className="flex flex-row items-center justify-center gap-2">
+                                                    <div className="flex flex-col gap-2 text-xs font-mono font-semibold">
+                                                        <div>
+                                                            Email: {data.email}
+                                                        </div>
+                                                        <div>
+                                                            Date Created: {format(data.creationTime, 'EEE, dd MMM yyyy')}
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex flex-col gap-2">
+                                                        <div onClick={() => onVerify(data.id)} className="border rounded-md p-2 cursor-pointer hover:scale-105">
+                                                            {verifyLoading ? (
+                                                                <div className={`h-6 w-6 rounded-full border-2 border-solid ${theme === 'dark' ? 'border-white' : 'border-black'} border-e-transparent animate-spin`} />
+                                                            ) : (
+                                                                <Check className="h-5 w-5 text-green-500" />
+                                                            )}
+                                                        </div>
+                                                        <div onClick={() => onDelete(data.id)} className="border rounded-md p-2 cursor-pointer hover:scale-105">
+                                                            {deleteLoading ? (
+                                                                <div className={`h-6 w-6 rounded-full border-2 border-solid ${theme === 'dark' ? 'border-white' : 'border-black'} border-e-transparent animate-spin`} />
+                                                            ) : (
+                                                                <X className="h-5 w-5 text-red-500" />
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                            }
+                        </div>
                         <div className="flex flex-col gap-2 w-full md:w-4/6">
                             <div className="text-lg font-bold ml-3">
                                 Logs

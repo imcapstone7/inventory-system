@@ -7,7 +7,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { ModeToggle } from "../theme-toggle";
 import { Skeleton } from "../ui/skeleton";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { IronSession } from "iron-session";
 import { SessionData } from "@/lib/lib";
 import { Separator } from "../ui/separator";
@@ -17,12 +17,19 @@ import { storage } from "@/firebase";
 import { ref as storageRef, uploadBytes } from "@firebase/storage";
 import { database } from "@/firebase";
 import { getDownloadURL } from "@firebase/storage";
-import { ref, update } from "firebase/database";
+import { onValue, ref, update } from "firebase/database";
 
 interface DropdownSettingsProps {
     isMounted: boolean,
     session: IronSession<SessionData>
     user: UserData | undefined
+}
+
+type Verification = {
+    id: string
+    email: string;
+    creationTime: string;
+    verified: boolean
 }
 
 const DropdownSettings: React.FC<DropdownSettingsProps> = ({
@@ -40,11 +47,36 @@ const DropdownSettings: React.FC<DropdownSettingsProps> = ({
     const [uploading, setUploading] = useState(false);
     const [image, setImage] = useState<File>()
     const [displayName, setDisplayName] = useState('');
+    const [dataVerify, setDataVerify] = useState<Verification[]>([]);
 
     const handleUpload = async (e: ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         setImage(file);
     };
+
+    useEffect(() => {
+
+        const verifyDataRef = ref(database, 'mobile/users');
+
+        const fetchData = (snapshot: any) => {
+            const verifyData = snapshot.val();
+            if (verifyData) {
+                const verifyArray: Verification[] = Object.keys(verifyData).map(key => ({
+                    id: key,
+                    ...verifyData[key]
+                }));
+
+                setDataVerify(verifyArray);
+            }
+        };
+
+        onValue(verifyDataRef, fetchData);
+
+        return () => {
+            // Unsubscribe from the real-time listener when component unmounts
+            onValue(verifyDataRef, fetchData);
+        };
+    }, []);
 
     const onSubmit = async () => {
         if (image) {
@@ -97,7 +129,15 @@ const DropdownSettings: React.FC<DropdownSettingsProps> = ({
                 <>
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <Button className="text-xs font-semibold" variant={"outline"}>
+                            <Button className="relative text-xs font-semibold" variant={"outline"}>
+                                {
+                                    dataVerify.filter(data => data.verified === false).length === 0 ?
+                                        ''
+                                        :
+                                        < div className="absolute -right-2 -top-2 bg-red-500 p-1 px-2 rounded-full text-xs">
+                                            <div>{dataVerify.filter(data => data.verified === false).length}</div>
+                                        </div>
+                                }
                                 <Avatar className="h-8 w-8 mr-1">
                                     <AvatarImage src={`${user?.photoURL ? user.photoURL : 'https://github.com/shadcn.png'}`} />
                                     <AvatarFallback>CN</AvatarFallback>
@@ -109,7 +149,16 @@ const DropdownSettings: React.FC<DropdownSettingsProps> = ({
                         <DropdownMenuContent className="flex flex-col gap-2">
                             <DropdownMenuItem onClick={() => setOpen(!open)} className="font-medium"><CircleUserRound className="h-4 w-4 mr-2" />Account</DropdownMenuItem>
                             <Separator />
-                            <DropdownMenuItem onClick={() => router.push('/settings-page')} className="font-medium"><Settings className="h-4 w-4 mr-2" />Settings</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => router.push('/settings-page')} className="font-medium"><Settings className="h-4 w-4 mr-2" />Settings
+                                {
+                                    dataVerify.filter(data => data.verified === false).length === 0 ?
+                                        ''
+                                        :
+                                        < div className="absolute right-12 -top-1 bg-red-500 p-1 px-2 rounded-full text-xs">
+                                            <div>{dataVerify.filter(data => data.verified === false).length}</div>
+                                        </div>
+                                }
+                            </DropdownMenuItem>
                             <DropdownMenuItem onClick={() => router.push('/support-page')} className="font-medium"><CircleHelp className="h-4 w-4 mr-2" />Suppport and Help</DropdownMenuItem>
                             <DropdownMenuItem onClick={signOut} className="font-medium">
                                 <Button className="w-full">
@@ -122,7 +171,7 @@ const DropdownSettings: React.FC<DropdownSettingsProps> = ({
                 </>
             }
             <ChangeImageAndName open={open} setOpen={setOpen} handleUpload={handleUpload} uploading={uploading} setDisplayName={setDisplayName} displayName={displayName} onSubmit={onSubmit} image={image} />
-        </div>
+        </div >
     )
 }
 
