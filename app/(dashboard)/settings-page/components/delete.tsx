@@ -21,7 +21,7 @@ interface DeleteProps {
 const formSchema = z.object({
     confirmation: z.string().refine((data) => data === "DELETE ACCOUNT", {
         message: "Confirmation must be 'DELETE ACCOUNT'",
-    }),
+    }).optional(), // Make the confirmation field optional
 });
 
 const DeleteSection: React.FC<DeleteProps> = ({
@@ -49,7 +49,7 @@ const DeleteSection: React.FC<DeleteProps> = ({
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            confirmation: "",
+            confirmation: "DELETE ACCOUNT",  // set the default value to "DELETE ACCOUNT"
         },
     });
 
