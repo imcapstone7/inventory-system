@@ -14,6 +14,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { format } from "date-fns";
 import { useTheme } from "next-themes";
+import AddTransports1 from "./add-transports1";
 
 interface UpperProps {
     dataTransport: Transport[]
@@ -109,8 +110,8 @@ const Upper: React.FC<UpperProps> = ({
                     </div>
                     :
                     <div className="flex gap-2">
-                        <AddTransports data={data} />
-                        <Button onClick={generateReport} className="text-xs bg-[#fb4c0a]">
+                        <AddTransports1 data={data} />
+                        <Button onClick={generateReport} className={`text-xs ${theme === 'dark' ? 'bg-[#3fab71] hover:bg-[#3fab71]/80' : 'bg-[#030d71] hover:bg-[#030d71]/80'}`}>
                             {loading ? (
                                 <div className={`h-6 w-6 rounded-full border-2 border-solid ${theme === 'dark' ? 'border-black' : 'border-white'} border-e-transparent animate-spin`} />
                             ) :

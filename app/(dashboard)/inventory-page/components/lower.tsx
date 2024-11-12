@@ -122,7 +122,7 @@ const Lower: React.FC<LowerProps> = ({
                                 <TooltipProvider>
                                     <Tooltip>
                                         <TooltipTrigger asChild>
-                                            <Button disabled={loading} onClick={printBarcode} size={"icon"} className="bg-[#fb4c0a]">
+                                            <Button disabled={loading} onClick={printBarcode} size={"icon"} className={`${theme === 'dark' ? 'bg-[#3fab71] hover:bg-[#3fab71]/80' : 'bg-[#030d71] hover:bg-[#030d71]/80'}`}>
                                                 {loading ? (
                                                     <div className={`h-6 w-6 rounded-full border-2 border-solid ${theme === 'dark' ? 'border-black' : 'border-white'} border-e-transparent animate-spin`} />
                                                 ) :

@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Footprints, Handshake, Home } from "lucide-react";
+import { Box, Footprints, Handshake, Home, MessageCircleMoreIcon } from "lucide-react";
 import { useTheme } from "next-themes";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -26,6 +26,12 @@ const MainNavigation: React.FC<MainNavigationProps> = ({
             label: 'Dashboard',
             icon: <Home className="h-4 w-4 mr-1" />,
             active: pathname === '/dashboard-page'
+        },
+        {
+            href: '/message-page',
+            label: 'Messsage',
+            icon: <MessageCircleMoreIcon className="h-4 w-4 mr-1" />,
+            active: pathname === '/message-page'
         },
         {
             href: '/tracking-page',
@@ -62,7 +68,7 @@ const MainNavigation: React.FC<MainNavigationProps> = ({
                     <React.Fragment>
                         {routes.map((route) => (
                             <Link key={route.href} href={route.href}
-                                className={`${route.active ? ` ${theme === 'dark' ? ' bg-[#172030]' : 'bg-[#F4F4F4]'} text-[#fb4c0a] ` : ''} flex items-center hover:scale-105 cursor-pointer transition p-3 rounded-xl`}>
+                                className={`${route.active ? ` ${theme === 'dark' ? ' bg-[#172030] text-[#3fab71]' : 'bg-[#F4F4F4] text-[#030d71]'}` : ''} flex items-center hover:scale-105 cursor-pointer transition p-3 rounded-xl`}>
                                 {route.icon}
                                 {route.label}
                             </Link>

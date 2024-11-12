@@ -80,7 +80,7 @@ const Navbar: React.FC<NavbarProps> = ({
                 for (const item of inventoryArray) {
                     const lowStock = 0.5 * Number(item.baseQuantity);
                     const outOfStock = 0;
-                    
+
                     if (Number(item.quantity) <= lowStock && Number(item.quantity) !== outOfStock) {
                         await update(ref(database, `inventory/${item.id}`), {
                             status: "Low Stock"

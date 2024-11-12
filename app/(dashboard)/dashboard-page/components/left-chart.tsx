@@ -1,7 +1,10 @@
+import { useTheme } from 'next-themes';
 import React from 'react';
 import { BarChart, Bar, ResponsiveContainer, Cell, Tooltip } from 'recharts';
 
 const LeftChart = () => {
+    const { theme } = useTheme();
+
     const data = [
         { name: 'Page A', uv: 4000, pv: 2400, amt: 2400 },
         { name: 'Page B', uv: 3000, pv: 1398, amt: 2210 },
@@ -19,14 +22,15 @@ const LeftChart = () => {
         { name: 'Page G', uv: 3490, pv: 4300, amt: 2100 },
     ];
 
-    const barColors = ['#fb4c0a', '#D3D3D3'];
+    const barColorsLight = ['#030d71', '#D3D3D3'];
+    const barColorsDark = ['#3fab71', '#D3D3D3'];
 
     return (
         <ResponsiveContainer width="70%" height={50}>
             <BarChart data={data}>
                 <Bar dataKey="uv">
                     {data.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={barColors[index % barColors.length]} />
+                        <Cell key={`cell-${index}`} fill={`${theme === 'dark' ? barColorsDark[index % barColorsDark.length] : barColorsLight[index % barColorsLight.length]}`} />
                     ))}
                 </Bar>
             </BarChart>

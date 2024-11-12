@@ -37,7 +37,7 @@ const formSchema = z.object({
     }, z.date({ required_error: "Return date is required", invalid_type_error: "Invalid date" })),
     returnTime: z.string().regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, "Invalid time format")
 });
-const AddTransports: React.FC<AddTransportsProps> = ({
+const AddTransports1: React.FC<AddTransportsProps> = ({
     data
 }) => {
 
@@ -92,7 +92,7 @@ const AddTransports: React.FC<AddTransportsProps> = ({
     return (
         <Sheet open={open} onOpenChange={handleOnOpenChange}>
             <SheetTrigger onClick={onOpen} asChild>
-                <Button className={`text-xs ${theme === 'dark' ? 'bg-[#3fab71] hover:bg-[#3fab71]/80' : 'bg-[#030d71] hover:bg-[#030d71]/80'} text-white`}><Truck className="h-4 w-4 mr-1" />Add Transports</Button>
+                <Button className={`text-xs text-white`}><Truck className="h-4 w-4 mr-1" />Add Transports</Button>
             </SheetTrigger>
             <SheetContent>
                 <SheetHeader>
@@ -220,4 +220,4 @@ const AddTransports: React.FC<AddTransportsProps> = ({
     )
 }
 
-export default AddTransports;
+export default AddTransports1;

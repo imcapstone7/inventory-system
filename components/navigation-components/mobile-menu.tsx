@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Footprints, Handshake, Home, X } from "lucide-react";
+import { Box, Footprints, Handshake, Home, MessageCircleMoreIcon, X } from "lucide-react";
 import useMenuModal from "@/hook/use-menu-modal";
 import { useTheme } from "next-themes";
 import { usePathname } from "next/navigation";
@@ -18,6 +18,12 @@ const MobileMenu = () => {
             label: 'Dashboard',
             icon: <Home className="h-4 w-4 mr-1" />,
             active: pathname === '/dashboard-page'
+        },
+        {
+            href: '/message-page',
+            label: 'Messsage',
+            icon: <MessageCircleMoreIcon className="h-4 w-4 mr-1" />,
+            active: pathname === '/message-page'
         },
         {
             href: '/tracking-page',
@@ -47,7 +53,7 @@ const MobileMenu = () => {
             <div className="flex flex-col p-4 sm:p-6 space-y-8">
                 {routes.map((route) => (
                     <Link onClick={() => menuModal.onClose()} key={route.href} href={route.href}
-                        className={`${route.active ? ` ${theme === 'dark' ? 'bg-gray-900' : 'bg-[#fff7f4]'} text-[#fb4c0a] ` : ''} px-4 h-24 font-semibold flex items-center rounded-xl cursor-pointer ${theme === 'dark' ? 'hover:bg-gray-900' : 'hover:bg-[#fff7f4]'} transition-colors`}>
+                        className={`${route.active ? ` ${theme === 'dark' ? 'bg-gray-900 text-[#3fab71]' : 'bg-gray-100 text-[#030d71]'}` : ''} px-4 h-24 font-semibold flex items-center rounded-xl cursor-pointer ${theme === 'dark' ? 'hover:bg-gray-900' : 'hover:bg-gray-100'} transition-colors`}>
                         {route.icon}
                         {route.label}
                     </Link>

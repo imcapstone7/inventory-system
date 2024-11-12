@@ -124,7 +124,7 @@ const Lower: React.FC<LowerProps> = ({
                     :
                     <div className="md:col-span-7 flex flex-col gap-4">
                         <div className="flex flex-col md:flex-row w-full gap-2">
-                            <div className={`${theme === 'dark' ? ' bg-[#172030]' : 'bg-[#F4F4F4]'} w-full md:w-1/3 flex justify-center items-center p-4 rounded-lg`}>
+                            <div className={`${theme === 'dark' ? ' bg-[#172030]' : 'bg-[#E6E6FA]'} w-full md:w-1/3 flex justify-center items-center p-4 rounded-lg`}>
                                 <div className="flex flex-col w-full">
                                     <div className="flex justify-between items-center">
                                         <div>
@@ -145,7 +145,7 @@ const Lower: React.FC<LowerProps> = ({
                                     </div>
                                 </div>
                             </div>
-                            <div className={`relative ${theme === 'dark' ? ' bg-[#172030]' : 'bg-[#F4F4F4]'} w-full md:w-1/3 flex justify-center items-center p-4 rounded-lg`}>
+                            <div className={`relative ${theme === 'dark' ? ' bg-[#172030]' : 'bg-[#E6E6FA]'} w-full md:w-1/3 flex justify-center items-center p-4 rounded-lg`}>
                                 <div className="md:absolute top-0 p-4 flex flex-col w-full">
                                     <div className="flex justify-between items-center">
                                         <div>
@@ -166,7 +166,7 @@ const Lower: React.FC<LowerProps> = ({
                                     </div>
                                 </div>
                             </div>
-                            <div className={`${theme === 'dark' ? ' bg-[#172030]' : 'bg-[#F4F4F4]'} w-full md:w-1/3 flex justify-center items-center p-4 rounded-lg`}>
+                            <div className={`${theme === 'dark' ? ' bg-[#172030]' : 'bg-[#E6E6FA]'} w-full md:w-1/3 flex justify-center items-center p-4 rounded-lg`}>
                                 <div className="flex flex-col w-full">
                                     <div className="flex justify-between items-center">
                                         <div>
@@ -188,7 +188,7 @@ const Lower: React.FC<LowerProps> = ({
                                 </div>
                             </div>
                         </div>
-                        <div className={`flex flex-col gap-4 ${theme === 'dark' ? ' bg-[#172030]' : 'bg-[#F4F4F4]'} p-4 rounded-lg`}>
+                        <div className={`flex flex-col gap-4 ${theme === 'dark' ? ' bg-[#172030]' : 'bg-[#E6E6FA]'} p-4 rounded-lg`}>
                             <div className="flex justify-between item-center md:grid md:grid-cols-12">
                                 <div className="md:col-span-7 text-xl font-semibold flex items-center">
                                     Latest Inventory
@@ -242,7 +242,7 @@ const Lower: React.FC<LowerProps> = ({
                     </div>
                     :
                     <div className="col-span-3 flex flex-col gap-2">
-                        <div className={`${theme === 'dark' ? ' bg-[#172030]' : 'bg-[#F4F4F4]'} p-4 rounded-lg`}>
+                        <div className={`${theme === 'dark' ? ' bg-[#172030]' : 'bg-[#E6E6FA]'} p-4 rounded-lg`}>
                             <div className="text-xl font-semibold">
                                 Total Transports
                             </div>
@@ -256,12 +256,12 @@ const Lower: React.FC<LowerProps> = ({
                                 The total number of transports currently managed in the system.
                             </div>
                         </div>
-                        <div className={`${theme === 'dark' ? ' bg-[#172030]' : 'bg-[#F4F4F4]'}  p-4 rounded-lg`}>
+                        <div className={`${theme === 'dark' ? ' bg-[#172030]' : 'bg-[#E6E6FA]'}  p-4 rounded-lg`}>
                             <div className="text-xl font-semibold">
                                 Tracking
                             </div>
                             <div>
-                                <TrackChart allData={allData.transport} />
+                                <TrackChart allData={allData.transport} theme={theme} />
                             </div>
                             <div className="mt-2 flex flex-col gap-4">
                                 <div className="font-semibold">

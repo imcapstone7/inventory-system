@@ -5,6 +5,7 @@ import { z } from "zod"
 import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { searchSchema } from "@/lib/types";
+import { useTheme } from "next-themes";
 
 interface SearchingProps {
     form: UseFormReturn<{
@@ -19,6 +20,8 @@ const Searching: React.FC<SearchingProps> = ({
     onSearch,
     loadingSearch
 }) => {
+
+    const { theme } = useTheme();
 
     return (
         <Form {...form}>
@@ -35,7 +38,7 @@ const Searching: React.FC<SearchingProps> = ({
                         </FormItem>
                     )}
                 />
-                <Button type="submit" size={"default"} className="text-xs bg-[#fb4c0a]">
+                <Button type="submit" size={"default"} className={`text-xs  ${theme === 'dark' ? 'bg-[#3fab71] hover:bg-[#3fab71]/80' : 'bg-[#030d71] hover:bg-[#030d71]/80'} text-white`}>
                     {
                         loadingSearch ?
                             (

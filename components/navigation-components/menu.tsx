@@ -3,8 +3,9 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useTheme } from "next-themes";
-import iconLight from "@/public/assets/images/icon-light.png";
-import iconDark from "@/public/assets/images/icon-dark.png";
+// import iconLight from "@/public/assets/images/icon-light.png";
+// import iconDark from "@/public/assets/images/icon-dark.png";
+import philscaIcon from "@/public/assets/images/philsca-icon.png";
 import { useEffect } from "react";
 import { Skeleton } from "../ui/skeleton";
 import MainNavigation from "./main-navigation";
@@ -48,13 +49,13 @@ const MenuNav: React.FC<MenuNavProps> = ({
                     :
                     <Link href="/dashboard-page" className="ml-4 lg:ml-0 flex items-center hover:scale-105 transition">
                         {theme === 'dark' ? (<>
-                            <Image src={iconDark} alt="" height={100} width={100} priority />
+                            <Image src={philscaIcon} alt="" height={70} priority />
                         </>)
                             :
                             <></>
                         }
                         {theme === 'light' ? (<>
-                            <Image src={iconLight} alt="" height={100} width={100} priority />
+                            <Image src={philscaIcon} alt="" height={70} priority />
                         </>)
                             :
                             <></>

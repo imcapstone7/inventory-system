@@ -9,12 +9,12 @@ export async function POST(
     const auth = getAuth(app);
 
     const body = await req.json();
-    const { values } = body;
+    const { email, password } = body;
 
     const session = await getSession();
 
     try {
-        const response = await signInWithEmailAndPassword(auth, values.email, values.password);
+        const response = await signInWithEmailAndPassword(auth, email, password);
 
         if (response.user !== null) {
             const id = response.user.uid;
@@ -28,6 +28,6 @@ export async function POST(
         }
     } catch (error) {
         console.log('SESSION', error);
-        return NextResponse.json("Internal error", { status: 500});
+        return NextResponse.json("Internal error", { status: 500 });
     }
 }

@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { PieChart, Pie, Sector, ResponsiveContainer } from 'recharts';
 import { Transport } from '../../transports-page/components/column';
+import { useTheme } from 'next-themes';
 
 interface RenderActiveShapeProps {
     cx: number;
@@ -71,6 +72,7 @@ const renderActiveShape = (props: RenderActiveShapeProps) => {
 
 interface ExampleProps {
     allData: Transport[];
+    theme: string | undefined
 }
 
 interface ExampleState {
@@ -93,14 +95,14 @@ export default class Example extends PureComponent<ExampleProps, ExampleState> {
 
     render() {
 
-        const { allData } = this.props;
+        const { allData, theme } = this.props;
         // Check if allData is defined before using it
         const borrowedCount = allData ? allData.filter(item => item.status === "Borrowed").length : 0;
         const returnedCount = allData ? allData.filter(item => item.status === "Returned").length : 0;
         
         const data = [
-            { name: 'Borrowed', value: borrowedCount, fill: '#A3A3A3' },
-            { name: 'Returned', value: returnedCount, fill: '#fb4c0a' },
+            { name: 'Borrowed', value: borrowedCount, fill: '#F44336' },
+            { name: 'Returned', value: returnedCount, fill: '#4CAF50' },
         ];
 
         return (

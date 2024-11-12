@@ -9,6 +9,7 @@ import ForgotPasswordDialog from "./forgot-password";
 import { useState } from "react";
 import useSession from "@/hook/use-session";
 import { loginSchema } from "@/lib/types";
+import { useTheme } from "next-themes";
 
 interface SignInFormProps {
     form: UseFormReturn<{
@@ -23,6 +24,7 @@ const SignInForm: React.FC<SignInFormProps> = ({
     onLogin
 }) => {
 
+    const { theme } = useTheme();
     const { loading } = useSession();
 
     const [openForgotPassword, setOpenForgotPassword] = useState(false);
@@ -59,11 +61,11 @@ const SignInForm: React.FC<SignInFormProps> = ({
                             </FormItem>
                         )}
                     />
-                    <Button className="absolute right-2 bg-[#ff5c00] rounded-full p-2" type="submit">
+                    <Button className="absolute right-2 bg-[#030d71] rounded-full p-2" type="submit">
                         {loading ? (
                             <div className="h-6 w-6 rounded-full border-2 border-solid border-white border-e-transparent animate-spin" />
                         ) : (
-                            <ArrowRight className="h-6 w-6" />
+                            <ArrowRight className={` h-6 w-6`} color="#FFFFFF" />
                         )}
                     </Button>
                 </div>

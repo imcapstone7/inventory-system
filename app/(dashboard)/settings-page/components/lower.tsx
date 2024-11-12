@@ -56,8 +56,8 @@ const Lower: React.FC<LowerProps> = ({
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
     const [sorting, setSorting] = useState<SortingState>([])
 
-    const [deleteLoading, setDeleteLoading] = useState(false);
-    const [verifyLoading, setVerifyLoading] = useState(false);
+    const [verifyLoading, setVerifyLoading] = useState<{ [id: string]: boolean }>({});
+    const [deleteLoading, setDeleteLoading] = useState<{ [id: string]: boolean }>({});
 
     const table = useReactTable({
         data: dataLogs,
@@ -149,12 +149,10 @@ const Lower: React.FC<LowerProps> = ({
     }, []);
 
     const onVerify = async (id: string) => {
-        try {
-            setVerifyLoading(true);
+        setVerifyLoading((prev) => ({ ...prev, [id]: true }));
 
-            const response = await axios.post('/api/verifyUser', {
-                id
-            });
+        try {
+            const response = await axios.post('/api/verifyUser', { id });
 
             if (response.data.status === 200) {
                 toast.success('Account Verified');
@@ -163,19 +161,16 @@ const Lower: React.FC<LowerProps> = ({
         } catch (error) {
             console.log(error);
             toast.error('Something went wrong.');
+        } finally {
+            setVerifyLoading((prev) => ({ ...prev, [id]: false }));
         }
-        finally {
-            setVerifyLoading(false);
-        }
-    }
+    };
 
     const onDelete = async (id: string) => {
-        try {
-            setDeleteLoading(true);
+        setDeleteLoading((prev) => ({ ...prev, [id]: true }));
 
-            const response = await axios.post('/api/deleteUser', {
-                id
-            });
+        try {
+            const response = await axios.post('/api/deleteUser', { id });
 
             if (response.data.status === 200) {
                 toast.success('Account Deleted');
@@ -184,11 +179,10 @@ const Lower: React.FC<LowerProps> = ({
         } catch (error) {
             console.log(error);
             toast.error('Something went wrong.');
+        } finally {
+            setDeleteLoading((prev) => ({ ...prev, [id]: false }));
         }
-        finally {
-            setDeleteLoading(false);
-        }
-    }
+    };
 
     return (
         <> {
@@ -277,54 +271,46 @@ const Lower: React.FC<LowerProps> = ({
                         <div className="flex flex-col gap-2">
                             <div className="relative text-lg font-bold ml-3">
                                 User Verification
-                                {
-                                    dataVerify.filter(data => data.verified === false).length === 0 ?
-                                        ''
-                                        :
-                                        < div className="absolute left-40 top-0 bg-red-500 p-1 px-2 rounded-full text-xs">
-                                            <div>{dataVerify.filter(data => data.verified === false).length}</div>
-                                        </div>
-                                }
-                            </div>
-                            {
-                                dataVerify.every(data => data.verified) ?
-                                    <div className="text-xs text-gray-500 italic ml-3">
-                                        There is no user to verify for now...
+                                {dataVerify.filter(data => !data.verified).length === 0 ? '' : (
+                                    <div className="absolute left-40 top-0 bg-red-500 p-1 px-2 rounded-full text-xs">
+                                        {dataVerify.filter(data => !data.verified).length}
                                     </div>
-                                    :
-                                    <div className="flex flex-col gap-2">
-                                        {dataVerify.map((data, index) => (
-                                            <div key={index} className="flex border rounded-md w-fit p-4">
-                                                <div className="flex flex-row items-center justify-center gap-2">
-                                                    <div className="flex flex-col gap-2 text-xs font-mono font-semibold">
-                                                        <div>
-                                                            Email: {data.email}
-                                                        </div>
-                                                        <div>
-                                                            Date Created: {format(data.creationTime, 'EEE, dd MMM yyyy')}
-                                                        </div>
+                                )}
+                            </div>
+                            {dataVerify.every(data => data.verified) ? (
+                                <div className="text-xs text-gray-500 italic ml-3">
+                                    There is no user to verify for now...
+                                </div>
+                            ) : (
+                                <div className="flex flex-col gap-2">
+                                    {dataVerify.filter((data) => !data.verified).map((data) => (
+                                        <div key={data.id} className="flex border rounded-md w-fit p-4">
+                                            <div className="flex flex-row items-center justify-center gap-2">
+                                                <div className="flex flex-col gap-2 text-xs font-mono font-semibold">
+                                                    <div>Email: {data.email}</div>
+                                                    <div>Date Created: {format(data.creationTime, 'EEE, dd MMM yyyy')}</div>
+                                                </div>
+                                                <div className="flex flex-col gap-2">
+                                                    <div onClick={() => onVerify(data.id)} className="border rounded-md p-2 cursor-pointer hover:scale-105">
+                                                        {verifyLoading[data.id] ? (
+                                                            <div className={`h-6 w-6 rounded-full border-2 border-solid ${theme === 'dark' ? 'border-white' : 'border-black'} border-e-transparent animate-spin`} />
+                                                        ) : (
+                                                            <Check className="h-5 w-5 text-green-500" />
+                                                        )}
                                                     </div>
-                                                    <div className="flex flex-col gap-2">
-                                                        <div onClick={() => onVerify(data.id)} className="border rounded-md p-2 cursor-pointer hover:scale-105">
-                                                            {verifyLoading ? (
-                                                                <div className={`h-6 w-6 rounded-full border-2 border-solid ${theme === 'dark' ? 'border-white' : 'border-black'} border-e-transparent animate-spin`} />
-                                                            ) : (
-                                                                <Check className="h-5 w-5 text-green-500" />
-                                                            )}
-                                                        </div>
-                                                        <div onClick={() => onDelete(data.id)} className="border rounded-md p-2 cursor-pointer hover:scale-105">
-                                                            {deleteLoading ? (
-                                                                <div className={`h-6 w-6 rounded-full border-2 border-solid ${theme === 'dark' ? 'border-white' : 'border-black'} border-e-transparent animate-spin`} />
-                                                            ) : (
-                                                                <X className="h-5 w-5 text-red-500" />
-                                                            )}
-                                                        </div>
+                                                    <div onClick={() => onDelete(data.id)} className="border rounded-md p-2 cursor-pointer hover:scale-105">
+                                                        {deleteLoading[data.id] ? (
+                                                            <div className={`h-6 w-6 rounded-full border-2 border-solid ${theme === 'dark' ? 'border-white' : 'border-black'} border-e-transparent animate-spin`} />
+                                                        ) : (
+                                                            <X className="h-5 w-5 text-red-500" />
+                                                        )}
                                                     </div>
                                                 </div>
                                             </div>
-                                        ))}
-                                    </div>
-                            }
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
                         <div className="flex flex-col gap-2 w-full md:w-4/6">
                             <div className="text-lg font-bold ml-3">

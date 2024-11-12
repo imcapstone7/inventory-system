@@ -18,14 +18,14 @@ async function createPdfBarcode1(reportData: dataWithCreatedAtAsString[]): Promi
 
     let { width, height } = page.getSize();
 
-    const url = 'https://firebasestorage.googleapis.com/v0/b/inventory-system-5f079.appspot.com/o/icon-light.png?alt=media&token=f415033a-26e6-450e-9af5-5e5ba3670ab6'
+    const url = 'https://firebasestorage.googleapis.com/v0/b/inventory-system-5f079.appspot.com/o/philsca-icon.png?alt=media&token=d1774b50-aed8-48d3-ba64-ac8fd4f753d2'
     const arrayBuffer = await fetch(url).then(res => res.arrayBuffer());
     const iconImage = await pdfDoc.embedPng(arrayBuffer);
 
     page.drawImage(iconImage, {
         x: 50,
         y: height - 100, // Adjust the position as needed
-        width: 100,
+        width: 80,
         height: 100,
     });
 

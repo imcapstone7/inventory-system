@@ -47,7 +47,7 @@ const Lower: React.FC<LowerProps> = ({
                 loadingSearch ?
                     <Skeleton className="col-span-5 h-[370px]" />
                     :
-                    <div className={`${theme === 'dark' ? ' bg-[#172030]' : 'bg-[#F4F4F4]'} ${loadingSearch || data?.id ? 'block' : 'hidden'} col-span-5 border border-1 rounded-lg p-4`}>
+                    <div className={`${theme === 'dark' ? ' bg-[#172030]' : 'bg-[#E6E6FA]'} ${loadingSearch || data?.id ? 'block' : 'hidden'} col-span-5 border border-1 rounded-lg p-4`}>
                         <div className="flex flex-col gap-4">
                             <div className="text-2xl font-semibold">
                                 Tracking Info
@@ -61,7 +61,7 @@ const Lower: React.FC<LowerProps> = ({
                                 {isInventory(data) && (
                                     <div className="flex text-md gap-1 font-mono">
                                         Inventory Name:
-                                        <div className="font-extrabold text-[#fb4c0a]">
+                                        <div className={`font-extrabold ${theme === 'dark' ? 'text-[#3fab71]' : 'text-[#030d71]'}`}>
                                             {data.inventoryName}
                                         </div>
                                     </div>
@@ -69,7 +69,7 @@ const Lower: React.FC<LowerProps> = ({
                                 {isTransport(data) && (
                                     <div className="flex text-md gap-1 font-mono">
                                         Receiver Name:
-                                        <div className="font-extrabold text-[#fb4c0a]">
+                                        <div className={`font-extrabold ${theme === 'dark' ? 'text-[#3fab71]' : 'text-[#030d71]'}`}>
                                             {data.receiver}
                                         </div>
                                     </div>
@@ -77,7 +77,7 @@ const Lower: React.FC<LowerProps> = ({
                                 {isInventory(data) && (
                                     <div className="flex text-md gap-1 font-mono">
                                         Description:
-                                        <div className="font-extrabold text-[#fb4c0a]">
+                                        <div className={`font-extrabold ${theme === 'dark' ? 'text-[#3fab71]' : 'text-[#030d71]'}`}>
                                             {data.description}
                                         </div>
                                     </div>
@@ -85,7 +85,7 @@ const Lower: React.FC<LowerProps> = ({
                                 {isTransport(data) && (
                                     <div className="flex text-md gap-1 font-mono">
                                         Item:
-                                        <div className="font-extrabold text-[#fb4c0a]">
+                                        <div className={`font-extrabold ${theme === 'dark' ? 'text-[#3fab71]' : 'text-[#030d71]'}`}>
                                             {data.item}
                                         </div>
                                     </div>
@@ -93,7 +93,7 @@ const Lower: React.FC<LowerProps> = ({
                                 {isInventory(data) && (
                                     <div className="flex text-md gap-1 font-mono">
                                         Category:
-                                        <div className="font-extrabold text-[#fb4c0a]">
+                                        <div className={`font-extrabold ${theme === 'dark' ? 'text-[#3fab71]' : 'text-[#030d71]'}`}>
                                             {data.category}
                                         </div>
                                     </div>
@@ -101,7 +101,7 @@ const Lower: React.FC<LowerProps> = ({
                                 {isTransport(data) && (
                                     <div className="flex text-md gap-1 font-mono">
                                         Purpose:
-                                        <div className="font-extrabold text-[#fb4c0a]">
+                                        <div className={`font-extrabold ${theme === 'dark' ? 'text-[#3fab71]' : 'text-[#030d71]'}`}>
                                             {data.purpose}
                                         </div>
                                     </div>
@@ -109,7 +109,7 @@ const Lower: React.FC<LowerProps> = ({
                                 {isInventory(data) && (
                                     <div className="flex text-md gap-1 font-mono">
                                         Contents:
-                                        <div className="font-extrabold text-[#fb4c0a]">
+                                        <div className={`font-extrabold ${theme === 'dark' ? 'text-[#3fab71]' : 'text-[#030d71]'}`}>
                                             {data.contents}
                                         </div>
                                     </div>
@@ -117,7 +117,7 @@ const Lower: React.FC<LowerProps> = ({
                                 {isTransport(data) && (
                                     <div className="flex text-md gap-1 font-mono">
                                         Return Date:
-                                        <div className="font-extrabold text-[#fb4c0a]">
+                                        <div className={`font-extrabold ${theme === 'dark' ? 'text-[#3fab71]' : 'text-[#030d71]'}`}>
                                             {data.returnDate}
                                         </div>
                                     </div>
@@ -125,7 +125,7 @@ const Lower: React.FC<LowerProps> = ({
                                 {isInventory(data) && (
                                     <div className="flex text-md gap-1 font-mono">
                                         Quantity:
-                                        <div className="font-extrabold text-[#fb4c0a]">
+                                        <div className={`font-extrabold ${theme === 'dark' ? 'text-[#3fab71]' : 'text-[#030d71]'}`}>
                                             {data.quantity}
                                         </div>
                                     </div>
@@ -133,7 +133,7 @@ const Lower: React.FC<LowerProps> = ({
                                 {isInventory(data) && (
                                     <div className="flex text-md gap-1 font-mono">
                                         location:
-                                        <div className="font-extrabold text-[#fb4c0a]">
+                                        <div className={`font-extrabold ${theme === 'dark' ? 'text-[#3fab71]' : 'text-[#030d71]'}`}>
                                             {data.location}
                                         </div>
                                     </div>
@@ -156,16 +156,16 @@ const Lower: React.FC<LowerProps> = ({
                     <div className={`${loadingSearch || data?.id ? 'block' : 'hidden'} mt-20 md:mt-0 md:col-span-7 h-full flex flex-col items-center justify-center gap-16`}>
                         <div className={`relative flex items-center h-2 w-[85%] ${theme === 'dark' ? 'bg-[#172030] ' : 'bg-gray-300'} rounded-full`}>
                             <div className={`${data?.status === "Out of Stock" ? 'block' : data?.status === "Borrowed" ? 'block' : 'hidden'} absolute h-16 w-16`}>
-                                <div className="absolute h-16 w-16 bg-[#fb4c0a] rounded-full animate-ping" />
-                                <div className="absolute h-16 w-16 bg-[#fb4c0a] rounded-full " />
+                                <div className="absolute h-16 w-16 bg-red-500 rounded-full animate-ping" />
+                                <div className="absolute h-16 w-16 bg-red-500 rounded-full " />
                             </div>
                             <div className={`${data?.status === "Low Stock" ? 'block' : 'hidden'} absolute h-16 w-16 right-[270px]`}>
-                                <div className="absolute h-16 w-16 bg-[#fb4c0a] rounded-full animate-ping" />
-                                <div className="absolute h-16 w-16 bg-[#fb4c0a] rounded-full " />
+                                <div className="absolute h-16 w-16 bg-yellow-500 rounded-full animate-ping" />
+                                <div className="absolute h-16 w-16 bg-yellow-500 rounded-full " />
                             </div>
                             <div className={`${data?.status === "Available" ? 'block' : data?.status === "Returned" ? 'block' : 'hidden'} absolute h-16 w-16 right-0`}>
-                                <div className="absolute h-16 w-16 bg-[#fb4c0a] rounded-full animate-ping" />
-                                <div className="absolute h-16 w-16 bg-[#fb4c0a] rounded-full " />
+                                <div className="absolute h-16 w-16 bg-green-500 rounded-full animate-ping" />
+                                <div className="absolute h-16 w-16 bg-green-500 rounded-full " />
                             </div>
                         </div>
                         <div className={`relative flex justify-between h-8 w-11/12 rounded-full text-xl font-extrabold`}>
