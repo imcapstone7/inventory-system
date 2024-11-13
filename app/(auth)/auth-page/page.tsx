@@ -22,7 +22,7 @@ import SignInForm from "@/components/signin-form";
 import SignUpForm from "@/components/signup-form";
 
 import { app } from "@/firebase";
-import { getAuth } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword, User } from "firebase/auth";
 import toast from "react-hot-toast";
 import useSession from "@/hook/use-session";
 import axios from 'axios';
@@ -41,6 +41,7 @@ export default function Page() {
     const { tabValue, setTabValue, loading, setLoading } = useSession();
     const [openOTP, setOpenOTP] = useState<boolean>(false);
     const [userId, setUserId] = useState<string>('');
+    const [user, setUser] = useState<User | null>(null);
     // const [values, setValues] = useState<{ email: string, password: string }>({ email: '', password: '' });
 
     const images = [
@@ -82,15 +83,23 @@ export default function Page() {
     const onLogin = async (values: z.infer<typeof loginSchema>) => {
         setLoading(true);
         try {
+            const userCredential = await signInWithEmailAndPassword(auth, values.email, values.password);
+            const user = userCredential.user;
+            if (user) {
+                const response = await axios.post('/api/otp', { values, user });
 
-            const response = await axios.post('/api/otp', { values });
-
-            if (response.data.status === 200) {
-                setUserId(response.data.id);
-                setOpenOTP(true);
+                if (response.data.status === 200) {
+                    setUserId(response.data.id);
+                    setUser(response.data.user);
+                    setOpenOTP(true);
+                }
+            } else {
             }
-        } catch (error) {
-            console.log(error);
+        } catch (error: any) {
+            if (error.code === 'auth/invalid-credential') {
+                toast.error('Incorrect email or password. Please try again.');
+                return;
+            }
             toast.error('Login failed. Please try again.');
         } finally {
             setLoading(false);
@@ -124,8 +133,8 @@ export default function Page() {
     //     }
     // }
 
-    if (openOTP && formLogin.getValues().email && formLogin.getValues().password && userId) {
-        return <Otp userId={userId} email={formLogin.getValues().email} password={formLogin.getValues().password} />;
+    if (openOTP && formLogin.getValues().email && formLogin.getValues().password && userId && user) {
+        return <Otp userId={userId} user={user} email={formLogin.getValues().email} password={formLogin.getValues().password} />;
     } else {
 
         return (

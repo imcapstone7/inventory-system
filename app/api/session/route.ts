@@ -9,18 +9,16 @@ export async function POST(
     const auth = getAuth(app);
 
     const body = await req.json();
-    const { email, password } = body;
+    const { email, password, user } = body;
 
     const session = await getSession();
 
     try {
-        const response = await signInWithEmailAndPassword(auth, email, password);
-
-        if (response.user !== null) {
-            const id = response.user.uid;
-            session.uid = response.user.uid;
-            session.email = response.user.email || '';
-            session.photoUrl = response.user.photoURL || '';
+        if (user !== null) {
+            const id = user.uid;
+            session.uid = user.uid;
+            session.email = user.email || '';
+            session.photoUrl = user.photoURL || '';
             session.isLoggedIn = true;
             await session.save();
 

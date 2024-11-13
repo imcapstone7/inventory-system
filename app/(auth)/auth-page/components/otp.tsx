@@ -1,11 +1,9 @@
-"use client"
-
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
-import axios from 'axios';
-
-import { Button } from "@/components/ui/button"
+import { useEffect } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import axios from "axios";
+import { Button } from "@/components/ui/button";
 import {
     Form,
     FormControl,
@@ -14,37 +12,42 @@ import {
     FormItem,
     FormLabel,
     FormMessage,
-} from "@/components/ui/form"
+} from "@/components/ui/form";
 import {
     InputOTP,
     InputOTPGroup,
     InputOTPSlot,
-} from "@/components/ui/input-otp"
+} from "@/components/ui/input-otp";
 import { database } from "@/firebase";
 import { ref, set } from "firebase/database";
 import Bowser from "bowser";
 import useSession from "@/hook/use-session";
 import { v4 as uuidv4 } from "uuid";
 import { useRouter } from "next/navigation";
+import { User, getAuth, signOut } from "firebase/auth";
+import { app } from "@/firebase";
 
-interface OtpProps{
+interface OtpProps {
     userId: string;
     email: string;
     password: string;
+    user: User;
 }
 
 const FormSchema = z.object({
     pin: z.string().min(6, {
         message: "Your one-time password must be 6 characters.",
     }),
-})
+});
 
 const Otp: React.FC<OtpProps> = ({
     userId,
     email,
-    password
+    password,
+    user,
 }) => {
-
+    const auth = getAuth(app);
+    
     const router = useRouter();
     const { tabValue, setTabValue, loading, setLoading } = useSession();
 
@@ -53,7 +56,7 @@ const Otp: React.FC<OtpProps> = ({
         defaultValues: {
             pin: "",
         },
-    })
+    });
 
     function getOSName() {
         const OS = Bowser.getParser(window.navigator.userAgent);
@@ -66,19 +69,18 @@ const Otp: React.FC<OtpProps> = ({
     }
 
     function generateShortUUID() {
-        return uuidv4().replace(/-/g, '').substring(0, 11);
+        return uuidv4().replace(/-/g, "").substring(0, 11);
     }
-
 
     const onSubmit = async (data: z.infer<typeof FormSchema>) => {
         try {
-            setLoading(true);         
+            setLoading(true);
 
             const otp = data.pin;
 
-            const response = await axios.post('/api/verifyOtp', { userId, otp });
+            const response = await axios.post("/api/verifyOtp", { userId, otp });
             if (response.data.status === 200) {
-                const response = await axios.post('/api/session', { email, password });
+                const response = await axios.post("/api/session", { email, password, user });
 
                 if (response.data.status === 200) {
                     const OS = getOSName();
@@ -87,22 +89,31 @@ const Otp: React.FC<OtpProps> = ({
                     await set(ref(database, `users/${response.data.id}/history/${generateShortUUID()}`), {
                         osUsed: OS,
                         browserUsed: Browser,
-                        createdAt: Date.now()
+                        createdAt: Date.now(),
                     });
 
-                    setTabValue('login');
-                    router.push('/dashboard-page');
+                    setTabValue("login");
+                    router.push("/dashboard-page");
                 }
             } else {
-                console.log('Invalid or expired OTP.');
+                console.log("Invalid or expired OTP.");
             }
-
         } catch (error) {
             console.log(error);
         } finally {
             setLoading(false);
         }
-    }
+    };
+
+    useEffect(() => {
+        // Run signOut when the component unmounts (user navigates away or closes the page)
+        return () => {
+            signOut(auth)
+                .then(() => console.log("User signed out"))
+                .catch((error) => console.error("Error signing out:", error));
+        };
+    }, []);
+
     return (
         <div className="flex justify-center items-center h-screen">
             <div className="flex justify-center items-center w-full">
@@ -139,7 +150,7 @@ const Otp: React.FC<OtpProps> = ({
                 </Form>
             </div>
         </div>
-    )
-}
+    );
+};
 
 export default Otp;

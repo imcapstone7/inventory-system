@@ -89,7 +89,8 @@ async function checkEmail(email: string): Promise<{ id: string; data: any } | nu
 
 export async function POST(req: Request) {
     const body = await req.json();
-    const { values } = body;
+
+    const { values, user } = body;
 
     try {
         const emailExists = await checkEmail(values.email);
@@ -100,7 +101,7 @@ export async function POST(req: Request) {
 
         // Generate OTP and send email to the user
         await storeOtp(values.email, emailExists.id);  // Store OTP in memory and send it
-        return NextResponse.json({ status: 200, message: 'OTP sent successfully.', id: emailExists.id });
+        return NextResponse.json({ status: 200, message: 'OTP sent successfully.', id: emailExists.id, user: user as User });
     } catch (error) {
         console.error('Error generating OTP:', error);
         return NextResponse.json({ status: 500, message: 'Failed to send OTP. Please try again.' });
