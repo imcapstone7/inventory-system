@@ -253,19 +253,25 @@ const Lower: React.FC<LowerProps> = ({
                                 </div>
                             </div>
                             <CollapsibleContent className="space-y-2">
-                                {data.slice(1).map((item, index) => (
-                                    <div key={index} className="flex flex-col rounded-md border px-4 py-3 font-mono text-sm">
-                                        <div>
-                                            OS: {item.osUsed}
+                                {data
+                                    .slice(1) // Skip the first item if necessary
+                                    .sort((a, b) => b.createdAt - a.createdAt) // Sort by latest to oldest
+                                    .map((item, index) => (
+                                        <div
+                                            key={index}
+                                            className="flex flex-col rounded-md border px-4 py-3 font-mono text-sm"
+                                        >
+                                            <div>
+                                                OS: {item.osUsed}
+                                            </div>
+                                            <div>
+                                                Browser: <span className="text-green-500">{item.browserUsed}</span>
+                                            </div>
+                                            <div>
+                                                When: {format(new Date(item.createdAt), "MMM dd, yyyy")}
+                                            </div>
                                         </div>
-                                        <div>
-                                            Browser: <span className="text-green-500">{item.browserUsed}</span>
-                                        </div>
-                                        <div>
-                                            When: {format(item.createdAt, 'MMM dd, yyyy')}
-                                        </div>
-                                    </div>
-                                ))}
+                                    ))}
                             </CollapsibleContent>
                         </Collapsible>
                         <div className="flex flex-col gap-2">

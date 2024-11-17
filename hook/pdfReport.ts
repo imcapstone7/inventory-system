@@ -1,14 +1,40 @@
 import { dataWithCreatedAtAsString } from '@/app/api/generatePdfReport/route';
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 
+// Function to wrap text within the available width
+function wrapText(text: string, font: any, size: number, maxWidth: number): string[] {
+    const words = text.split(' ');
+    const lines: string[] = [];
+    let currentLine = '';
+
+    words.forEach(word => {
+        const testLine = currentLine + (currentLine.length > 0 ? ' ' : '') + word;
+        const width = font.widthOfTextAtSize(testLine, size);
+
+        if (width <= maxWidth) {
+            currentLine = testLine;
+        } else {
+            if (currentLine.length > 0) {
+                lines.push(currentLine);
+            }
+            currentLine = word; // Start new line with the current word
+        }
+    });
+
+    if (currentLine.length > 0) {
+        lines.push(currentLine); // Push the last line
+    }
+
+    return lines;
+}
+
 async function createPdfReport(reportData: dataWithCreatedAtAsString[]): Promise<Uint8Array> {
     const pdfDoc = await PDFDocument.create();
-    const page = pdfDoc.addPage([600, 800]); // Specify page size as needed
-
-    const { width, height } = page.getSize();
+    let page = pdfDoc.addPage([600, 800]); // Specify page size as needed
+    let { width, height } = page.getSize();
 
     const url = 'https://firebasestorage.googleapis.com/v0/b/inventory-system-5f079.appspot.com/o/philsca-icon.png?alt=media&token=d1774b50-aed8-48d3-ba64-ac8fd4f753d2'
-    const arrayBuffer = await fetch(url).then(res => res.arrayBuffer())
+    const arrayBuffer = await fetch(url).then(res => res.arrayBuffer());
     const iconImage = await pdfDoc.embedPng(arrayBuffer);
 
     page.drawImage(iconImage, {
@@ -49,23 +75,45 @@ async function createPdfReport(reportData: dataWithCreatedAtAsString[]): Promise
     page.drawText('Status', { x: 460, y: currentY, size: 12 });
     currentY -= lineHeight;
 
-    // Add table content
-    reportData.forEach((item) => {
-        currentY -= lineHeight;
-        page.drawText(item.inventoryName, { x: 50, y: currentY, size: 12 });
-        page.drawText(item.category, { x: 200, y: currentY, size: 12 });
-        page.drawText(item.quantity.toString(), { x: 310, y: currentY, size: 12 });
-        page.drawText(item.location, { x: 370, y: currentY, size: 12 });
-        page.drawText(item.status, { x: 460, y: currentY, size: 12 });
-    });
+    const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+    const maxWidth = 130; // Adjust as per your available space for text
 
-    // Add footer
-    page.drawText('End of Report', {
-        x: width / 2 - 50,
-        y: 50,
-        size: 12,
-        color: rgb(0, 0, 0),
-        font: await pdfDoc.embedFont(StandardFonts.Helvetica),
+    // Add table content
+    reportData.forEach((item, index) => {
+        currentY -= lineHeight;
+
+        // Check if we need a new page
+        if (currentY < 50) {
+            page = pdfDoc.addPage([600, 800]); // Add new page
+            ({ width, height } = page.getSize()); // Update the page size
+            currentY = height - 200; // Reset Y position
+        }
+
+        // Wrap text for each column to avoid overflow
+        const itemLines = wrapText(item.inventoryName, font, 12, maxWidth);
+        const categoryLines = wrapText(item.category, font, 12, maxWidth);
+        const quantityLines = wrapText(item.quantity.toString(), font, 12, maxWidth);
+        const locationLines = wrapText(item.location, font, 12, maxWidth);
+        const statusLines = wrapText(item.status, font, 12, maxWidth);
+
+        // Draw each wrapped line for the item
+        itemLines.forEach((line, lineIndex) => {
+            page.drawText(line, { x: 50, y: currentY - lineIndex * lineHeight, size: 12 });
+        });
+        categoryLines.forEach((line, lineIndex) => {
+            page.drawText(line, { x: 200, y: currentY - lineIndex * lineHeight, size: 12 });
+        });
+        quantityLines.forEach((line, lineIndex) => {
+            page.drawText(line, { x: 310, y: currentY - lineIndex * lineHeight, size: 12 });
+        });
+        locationLines.forEach((line, lineIndex) => {
+            page.drawText(line, { x: 370, y: currentY - lineIndex * lineHeight, size: 12 });
+        });
+        statusLines.forEach((line, lineIndex) => {
+            page.drawText(line, { x: 460, y: currentY - lineIndex * lineHeight, size: 12 });
+        });
+
+        currentY -= Math.max(itemLines.length, categoryLines.length, quantityLines.length, locationLines.length, statusLines.length) * lineHeight;
     });
 
     // Save PDF to buffer
