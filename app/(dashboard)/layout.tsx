@@ -17,7 +17,7 @@ export default async function mainLayout({
 
     return (
         <SessionProvider session={session}>
-            <div className="h-full w-full">
+            <div className="h-full md:h-screen w-full">
                 <Navbar session={session} />
                 {children}
                 <Footer />

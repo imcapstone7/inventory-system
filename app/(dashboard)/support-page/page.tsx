@@ -1,18 +1,13 @@
-import { getSession } from "@/lib/action";
 import Upper from "./components/upper";
 import Lower from "./components/lower";
 
 const Support = async () => {
 
-    const session = await getSession();
-
     return (
-        <div className="h-full">
-            <div className="mx-8 my-4 space-y-4">
+            <div className="h-[82%] flex flex-col gap-4 lg:gap-8 p-4 xl:p-8">
                 <Upper />
                 <Lower />
             </div>
-        </div>
     )
 }
 

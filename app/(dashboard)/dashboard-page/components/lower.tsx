@@ -110,21 +110,21 @@ const Lower: React.FC<LowerProps> = ({
     }, []);
 
     return (
-        <div className="flex flex-col md:grid md:grid-cols-10 gap-4">
+        <div className="h-full flex flex-col md:grid md:grid-cols-10 gap-4">
             {
                 !isMounted ?
                     <div className="md:col-span-7 flex flex-col gap-4">
-                        <div className="flex w-full gap-2">
-                            <Skeleton className="h-36 w-1/3" />
-                            <Skeleton className="h-36 w-1/3" />
-                            <Skeleton className="h-36 w-1/3" />
+                        <div className="h-[30%] flex w-full gap-2">
+                            <Skeleton className="w-1/3" />
+                            <Skeleton className="w-1/3" />
+                            <Skeleton className="w-1/3" />
                         </div>
-                        <Skeleton className="h-[600px] w-full" />
+                        <Skeleton className="h-full w-full" />
                     </div>
                     :
-                    <div className="md:col-span-7 flex flex-col gap-4">
-                        <div className="flex flex-col md:flex-row w-full gap-2">
-                            <div className={`${theme === 'dark' ? ' bg-[#172030]' : 'bg-[#E6E6FA]'} w-full md:w-1/3 flex justify-center items-center p-4 rounded-lg`}>
+                    <div className="h-full md:col-span-7 flex flex-col gap-4">
+                        <div className="md:h-[30%] flex flex-col md:flex-row w-full gap-2">
+                            <div className={`${theme === 'dark' ? ' bg-[#172030]' : 'bg-[#E6E6FA]'} w-full md:w-1/3 flex justify-center items-center p-4 xl:p-8 rounded-lg`}>
                                 <div className="flex flex-col w-full">
                                     <div className="flex justify-between items-center">
                                         <div>
@@ -145,8 +145,8 @@ const Lower: React.FC<LowerProps> = ({
                                     </div>
                                 </div>
                             </div>
-                            <div className={`relative ${theme === 'dark' ? ' bg-[#172030]' : 'bg-[#E6E6FA]'} w-full md:w-1/3 flex justify-center items-center p-4 rounded-lg`}>
-                                <div className="md:absolute top-0 p-4 flex flex-col w-full">
+                            <div className={`relative ${theme === 'dark' ? ' bg-[#172030]' : 'bg-[#E6E6FA]'} w-full md:w-1/3 flex justify-center items-center rounded-lg`}>
+                                <div className="p-4 xl:p-8 flex flex-col w-full">
                                     <div className="flex justify-between items-center">
                                         <div>
                                             <div className="text-xl font-semibold">
@@ -166,7 +166,7 @@ const Lower: React.FC<LowerProps> = ({
                                     </div>
                                 </div>
                             </div>
-                            <div className={`${theme === 'dark' ? ' bg-[#172030]' : 'bg-[#E6E6FA]'} w-full md:w-1/3 flex justify-center items-center p-4 rounded-lg`}>
+                            <div className={`${theme === 'dark' ? ' bg-[#172030]' : 'bg-[#E6E6FA]'} w-full md:w-1/3 flex justify-center items-center p-4 xl:p-8 rounded-lg`}>
                                 <div className="flex flex-col w-full">
                                     <div className="flex justify-between items-center">
                                         <div>
@@ -188,7 +188,7 @@ const Lower: React.FC<LowerProps> = ({
                                 </div>
                             </div>
                         </div>
-                        <div className={`flex flex-col gap-4 ${theme === 'dark' ? ' bg-[#172030]' : 'bg-[#E6E6FA]'} p-4 rounded-lg`}>
+                        <div className={`h-full flex flex-col gap-4 ${theme === 'dark' ? ' bg-[#172030]' : 'bg-[#E6E6FA]'} p-4 rounded-lg`}>
                             <div className="flex justify-between item-center md:grid md:grid-cols-12">
                                 <div className="md:col-span-7 text-xl font-semibold flex items-center">
                                     Latest Inventory
@@ -237,12 +237,12 @@ const Lower: React.FC<LowerProps> = ({
             {
                 !isMounted ?
                     <div className="col-span-3 flex flex-col gap-2">
-                        <Skeleton className="h-52 w-full" />
-                        <Skeleton className="h-[542px] w-full" />
+                        <Skeleton className="h-[30%] w-full" />
+                        <Skeleton className="h-[70%] w-full" />
                     </div>
                     :
-                    <div className="col-span-3 flex flex-col gap-2">
-                        <div className={`${theme === 'dark' ? ' bg-[#172030]' : 'bg-[#E6E6FA]'} p-4 rounded-lg`}>
+                    <div className="h-full col-span-3 flex flex-col gap-2">
+                        <div className={`h-[30%] flex flex-col justify-center ${theme === 'dark' ? ' bg-[#172030]' : 'bg-[#E6E6FA]'} p-4 rounded-lg`}>
                             <div className="text-xl font-semibold">
                                 Total Transports
                             </div>
@@ -256,7 +256,7 @@ const Lower: React.FC<LowerProps> = ({
                                 The total number of transports currently managed in the system.
                             </div>
                         </div>
-                        <div className={`${theme === 'dark' ? ' bg-[#172030]' : 'bg-[#E6E6FA]'}  p-4 rounded-lg`}>
+                        <div className={`h-[70%] ${theme === 'dark' ? ' bg-[#172030]' : 'bg-[#E6E6FA]'}  p-4 rounded-lg`}>
                             <div className="text-xl font-semibold">
                                 Tracking
                             </div>

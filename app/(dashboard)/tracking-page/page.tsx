@@ -47,11 +47,9 @@ const Tracking = () => {
     }
 
     return (
-        <div className="h-full">
-            <div className="mx-8 my-4 space-y-4">
-                <Upper form={form} onSearch={onSearch} loadingSearch={loadingSearch} />
-                <Lower data={data} loadingSearch={loadingSearch} />
-            </div>
+        <div className="h-[82%] flex flex-col gap-4 lg:gap-8 p-4 xl:p-8">
+            <Upper form={form} onSearch={onSearch} loadingSearch={loadingSearch} />
+            <Lower data={data} loadingSearch={loadingSearch} />
         </div>
     )
 }

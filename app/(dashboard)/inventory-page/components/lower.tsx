@@ -77,9 +77,9 @@ const Lower: React.FC<LowerProps> = ({
         <>
             {
                 !isMounted ?
-                    <Skeleton className="h-[900px] w-full" />
+                    <Skeleton className="h-full w-full" />
                     :
-                    <div className={`flex flex-col gap-4 ${theme === 'dark' ? ' bg-[#172030]' : 'bg-[#F4F4F4]'} p-4 rounded-lg`}>
+                    <div className={`h-full flex flex-col gap-4 ${theme === 'dark' ? ' bg-[#172030]' : 'bg-[#F4F4F4]'} p-4 rounded-lg`}>
                         <div className="flex justify-between item-center md:grid md:grid-cols-12">
                             <div className="md:col-span-7 text-xl font-semibold flex items-center">
                                 Inventory Cargo

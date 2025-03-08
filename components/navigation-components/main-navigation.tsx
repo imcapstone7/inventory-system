@@ -27,12 +27,12 @@ const MainNavigation: React.FC<MainNavigationProps> = ({
             icon: <Home className="h-4 w-4 mr-1" />,
             active: pathname === '/dashboard-page'
         },
-        {
-            href: '/message-page',
-            label: 'Messsage',
-            icon: <MessageCircleMoreIcon className="h-4 w-4 mr-1" />,
-            active: pathname === '/message-page'
-        },
+        // {
+        //     href: '/message-page',
+        //     label: 'Messsage',
+        //     icon: <MessageCircleMoreIcon className="h-4 w-4 mr-1" />,
+        //     active: pathname === '/message-page'
+        // },
         {
             href: '/tracking-page',
             label: 'Tracking',

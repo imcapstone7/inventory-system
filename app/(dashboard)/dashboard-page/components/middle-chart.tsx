@@ -10,7 +10,7 @@ const MiddleChart = () => {
     ];
 
     return (
-        <ResponsiveContainer width="100%" height={80}>
+        <ResponsiveContainer width="100%" height={100}>
             <BarChart className='-translate-x-16' data={data} layout="vertical">
                 <XAxis className='hidden' type="number" />
                 <YAxis className='hidden'  type="category" />

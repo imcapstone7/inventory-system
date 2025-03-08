@@ -50,7 +50,7 @@ export async function POST(
         displayValue: true
     });
 
-    const barcodeBuffer = canvas.toBuffer("image/png");
+    const barcodeBuffer = new Uint8Array(canvas.toBuffer("image/png"));
     const barcodePath = `barcodes/${barcodeValue}.png`;
     const barcodeStorageRef = storageRef(storage, barcodePath);
 

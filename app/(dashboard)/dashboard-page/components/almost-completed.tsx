@@ -31,7 +31,7 @@ const AlmostCompleted: React.FC<AlmostCompletedProps> = ({
                             <Card>
                                 <CardContent className="flex flex-col gap-1 aspect-square p-4">
                                     <div className="relative aspect-square h-32 md:h-[70px] border border-1 w-full">
-                                        <Image className="object-cover object-center" width={210} height={210} src={transport.barcodeImageUrl} alt="" />
+                                        <Image className="object-cover object-center" fill src={transport.barcodeImageUrl} alt="" />
                                     </div>
                                     <div className="text-lg font-extrabold">
                                         {transport.item}

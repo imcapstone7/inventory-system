@@ -117,7 +117,7 @@ const Navbar: React.FC<NavbarProps> = ({
 
     return (
         <>
-            <div className={`${theme === 'dark' ? 'bg-[#020817]' : ''} ${theme === 'light' ? 'bg-white' : ''} sticky top-0 z-20 ${scrollY === 0 ? '' : 'border-b transition-all duration-300 ease-out'}`}>
+            <div className={`h-[8%] ${theme === 'dark' ? 'bg-[#020817]' : ''} ${theme === 'light' ? 'bg-white' : ''} sticky top-0 z-20 ${scrollY === 0 ? '' : 'border-b transition-all duration-300 ease-out'}`}>
                 <div className="relative px-2 sm:px-4 lg:px-8 flex h-20 items-center justify-between">
                     <MenuNav session={session} user={user} />
                 </div>
