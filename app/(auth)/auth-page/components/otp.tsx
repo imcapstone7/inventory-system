@@ -47,7 +47,7 @@ const Otp: React.FC<OtpProps> = ({
     user,
 }) => {
     const auth = getAuth(app);
-    
+
     const router = useRouter();
     const { tabValue, setTabValue, loading, setLoading } = useSession();
 

@@ -8,7 +8,7 @@ export async function POST(req: Request) {
     try {
         // Reference to the user's OTP data in Firebase Realtime Database
         const otpRef = ref(database, `otpRequests/${userId}`);
-        
+
         // Retrieve the OTP and timestamp from Firebase
         const snapshot = await get(otpRef);
 
@@ -21,7 +21,7 @@ export async function POST(req: Request) {
             if (isValid) {
                 // OTP is valid and hasn't expired; remove it from the database
                 await remove(otpRef);
-                
+
                 return NextResponse.json({ status: 200, message: 'OTP verified successfully.' });
             }
 

@@ -6,20 +6,16 @@ import { Autoplay, A11y } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/autoplay';
 import 'swiper/css/controller';
-
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import authPic1 from "@/public/assets/images/philsca-pic-1.jpg";
 import authPic2 from "@/public/assets/images/philsca-pic-2.jpg"
 import authPic3 from "@/public/assets/images/philsca-pic-3.jpg"
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
-import { CircleUserRound, LogIn } from "lucide-react";
 
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import SignInForm from "@/components/signin-form";
-import SignUpForm from "@/components/signup-form";
 
 import { app } from "@/firebase";
 import { getAuth, signInWithEmailAndPassword, User } from "firebase/auth";
@@ -31,6 +27,7 @@ import philscaIcon from "@/public/assets/images/philsca-icon.png";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Otp from "./components/otp";
+import { ref, set } from "firebase/database";
 
 const auth = getAuth(app);
 
@@ -158,34 +155,34 @@ export default function Page() {
                             </div>
                         </div>
                         {/* <Tabs value={tabValue} className="w-full">
-                        <TabsList className="h-14 w-[350px] lg:w-[400px] px-2">
-                            <TabsTrigger onClick={() => setTabValue('login')} className="h-10 w-[200px] data-[state=active]:bg-[#020712] data-[state=active]:text-white" value="login"><LogIn className="h-4 w-4 mr-2" /> Login</TabsTrigger>
-                            <TabsTrigger onClick={() => setTabValue('create')} className="h-10 w-[200px] data-[state=active]:bg-[#020712] data-[state=active]:text-white" value="create"><CircleUserRound className="h-4 w-4 mr-2" />Create Account</TabsTrigger>
-                        </TabsList>
-                        <TabsContent className="flex flex-col px-2 mt-6" value="login">
-                            <div className="text-2xl font-medium">
-                                Welcome back!
-                                <span className="ml-1 font-extrabold">User</span>
-                            </div>
-                            <div className="text-xs text-gray-500 font-semibold">
-                                Get into your dashboard
-                            </div>
-                            <div className="mt-6">
-                                <SignInForm form={formLogin} onLogin={onLogin} />
-                            </div>
-                        </TabsContent>
-                        <TabsContent className="flex flex-col px-2 mt-4" value="create">
-                            <div className="text-2xl font-medium">
-                                Create an account
-                            </div>
-                            <div className="text-xs text-gray-500 font-semibold">
-                                Get into your dashboard
-                            </div>
-                            <div className="mt-6">
-                                <SignUpForm loading={loading} form={form1} onCreateAccount={onCreateAccount} />
-                            </div>
-                        </TabsContent>
-                    </Tabs> */}
+                            <TabsList className="h-14 w-[350px] lg:w-[400px] px-2">
+                                <TabsTrigger onClick={() => setTabValue('login')} className="h-10 w-[200px] data-[state=active]:bg-[#020712] data-[state=active]:text-white" value="login"><LogIn className="h-4 w-4 mr-2" /> Login</TabsTrigger>
+                                <TabsTrigger onClick={() => setTabValue('create')} className="h-10 w-[200px] data-[state=active]:bg-[#020712] data-[state=active]:text-white" value="create"><CircleUserRound className="h-4 w-4 mr-2" />Create Account</TabsTrigger>
+                            </TabsList>
+                            <TabsContent className="flex flex-col px-2 mt-6" value="login">
+                                <div className="text-2xl font-medium">
+                                    Welcome back!
+                                    <span className="ml-1 font-extrabold">User</span>
+                                </div>
+                                <div className="text-xs text-gray-500 font-semibold">
+                                    Get into your dashboard
+                                </div>
+                                <div className="mt-6">
+                                    <SignInForm form={formLogin} onLogin={onLogin} />
+                                </div>
+                            </TabsContent>
+                            <TabsContent className="flex flex-col px-2 mt-4" value="create">
+                                <div className="text-2xl font-medium">
+                                    Create an account
+                                </div>
+                                <div className="text-xs text-gray-500 font-semibold">
+                                    Get into your dashboard
+                                </div>
+                                <div className="mt-6">
+                                    <SignUpForm loading={loading} form={form1} onCreateAccount={onCreateAccount} />
+                                </div>
+                            </TabsContent>
+                        </Tabs> */}
                     </div>
                 </div>
                 <div className="col-span-6 hidden lg:block">
