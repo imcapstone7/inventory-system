@@ -53,7 +53,8 @@ const Message = () => {
         return messages.filter(message => !message.adminRead).length;
     };
 
-    const truncateString = (str: string, num: number) => {
+    const truncateString = (str: string | undefined, num: number) => {
+        if (!str) return ''; // or return a fallback string like 'N/A'
         if (str.length <= num) {
             return str;
         }
@@ -197,85 +198,86 @@ const Message = () => {
                                 </div>
                                 <ScrollArea className="h-[420px] px-4">
                                     <div className="flex flex-col gap-4">
-                                        {messages.map((data, indexx) => {
-                                            const latestMessage = getLastMessage(data);
-                                            const unreadCount = countUnreadMessages(data.messages);
-                                            if (data.messages.length === 0) {
-                                                <div>
-                                                    <div className={`relative flex flex-row items-center w-full p-4 rounded-2xl gap-2 ${theme === 'dark' ? index === indexx ? 'bg-gray-300' : 'hover:bg-gray-100' : index === indexx ? 'bg-gray-500' : 'hover:bg-gray-200'}  hover:cursor-pointer`}>
-                                                        <Avatar>
-                                                            <AvatarImage src={'https://firebasestorage.googleapis.com/v0/b/philsca-93561.appspot.com/o/no-profile.jpg?alt=media&token=6afe5eb2-26a5-4d33-839c-019dd66be6fe'} alt="@shadcn" />
-                                                            <AvatarFallback>CN</AvatarFallback>
-                                                        </Avatar>
-                                                        <div className="flex flex-col">
-                                                            <div className={`text-base poppins-semibold`}>
-                                                                none
+                                        {
+                                            messages.map((data, indexx) => {
+                                                const latestMessage = getLastMessage(data);
+                                                const unreadCount = countUnreadMessages(data.messages);
+                                                if (data.messages.length === 0) {
+                                                    <div>
+                                                        <div className={`relative flex flex-row items-center w-full p-4 rounded-2xl gap-2 ${theme === 'dark' ? index === indexx ? 'bg-gray-300' : 'hover:bg-gray-100' : index === indexx ? 'bg-gray-500' : 'hover:bg-gray-200'}  hover:cursor-pointer`}>
+                                                            <Avatar>
+                                                                <AvatarImage src={'https://firebasestorage.googleapis.com/v0/b/philsca-93561.appspot.com/o/no-profile.jpg?alt=media&token=6afe5eb2-26a5-4d33-839c-019dd66be6fe'} alt="@shadcn" />
+                                                                <AvatarFallback>CN</AvatarFallback>
+                                                            </Avatar>
+                                                            <div className="flex flex-col">
+                                                                <div className={`text-base poppins-semibold`}>
+                                                                    none
+                                                                </div>
+                                                                <div className="flex flex-row gap-1 text-xs poppins-medium text-gray-500">
+                                                                    {
+                                                                        latestMessage ? (
+                                                                            <>
+                                                                                <div>{truncateString(latestMessage.message, 28)}</div>
+                                                                                <TimeAgo date={latestMessage.timestamp} />
+                                                                            </>
+                                                                        ) : (
+                                                                            <div>No messages</div>
+                                                                        )
+                                                                    }
+                                                                </div>
                                                             </div>
-                                                            <div className="flex flex-row gap-1 text-xs poppins-medium text-gray-500">
-                                                                {
-                                                                    latestMessage ? (
-                                                                        <>
-                                                                            <div>{truncateString(latestMessage.message, 28)}</div>
-                                                                            <TimeAgo date={latestMessage.timestamp} />
-                                                                        </>
-                                                                    ) : (
-                                                                        <div>No messages</div>
-                                                                    )
-                                                                }
+                                                            <div className={`${unreadCount === 0 ? 'hidden' : 'block'} absolute top-2 left-2 h-5 w-5 bg-red-500 rounded-full flex flex-row justify-center items-center text-white text-xs poppins-bold`}>
+                                                                {unreadCount}
                                                             </div>
-                                                        </div>
-                                                        <div className={`${unreadCount === 0 ? 'hidden' : 'block'} absolute top-2 left-2 h-5 w-5 bg-red-500 rounded-full flex flex-row justify-center items-center text-white text-xs poppins-bold`}>
-                                                            {unreadCount}
                                                         </div>
                                                     </div>
-                                                </div>
-                                            }
-                                            else {
-                                                return (
-                                                    <div onClick={async () => {
-                                                        setIndex(indexx);
-                                                        const messsageRef = ref(database, `messages/${data.userId}`);
+                                                }
+                                                else {
+                                                    return (
+                                                        <div onClick={async () => {
+                                                            setIndex(indexx);
+                                                            const messsageRef = ref(database, `messages/${data.userId}`);
 
-                                                        const snapshot = await get(messsageRef);
+                                                            const snapshot = await get(messsageRef);
 
-                                                        if (snapshot.exists()) {
-                                                            const updates: any = {};
-                                                            snapshot.forEach((childSnapshot) => {
-                                                                const childKey = childSnapshot.key;
-                                                                updates[`${childKey}/adminRead`] = true;
-                                                            });
+                                                            if (snapshot.exists()) {
+                                                                const updates: any = {};
+                                                                snapshot.forEach((childSnapshot) => {
+                                                                    const childKey = childSnapshot.key;
+                                                                    updates[`${childKey}/adminRead`] = true;
+                                                                });
 
-                                                            await update(messsageRef, updates);
-                                                        }
-                                                    }} key={indexx} className={`relative flex flex-row items-center w-full p-4 rounded-2xl gap-2 ${index === indexx ? 'bg-gray-300' : 'hover:bg-gray-100'}  hover:cursor-pointer`}>
-                                                        <Avatar>
-                                                            <AvatarImage src={data.photoURL} alt="@shadcn" />
-                                                            <AvatarFallback>CN</AvatarFallback>
-                                                        </Avatar>
-                                                        <div className="flex flex-col">
-                                                            <div className={`text-base poppins-semibold`}>
-                                                                {data.email}
+                                                                await update(messsageRef, updates);
+                                                            }
+                                                        }} key={indexx} className={`relative flex flex-row items-center w-full p-4 rounded-2xl gap-2 ${index === indexx ? 'bg-gray-300' : 'hover:bg-gray-100'}  hover:cursor-pointer`}>
+                                                            <Avatar>
+                                                                <AvatarImage src={data.photoURL} alt="@shadcn" />
+                                                                <AvatarFallback>CN</AvatarFallback>
+                                                            </Avatar>
+                                                            <div className="flex flex-col">
+                                                                <div className={`text-base poppins-semibold`}>
+                                                                    {data.email}
+                                                                </div>
+                                                                <div className="flex flex-row gap-1 text-xs poppins-medium text-gray-500">
+                                                                    {
+                                                                        latestMessage ? (
+                                                                            <>
+                                                                                <div>{truncateString(latestMessage.message, 28)}</div>
+                                                                                <TimeAgo date={latestMessage.timestamp} />
+                                                                            </>
+                                                                        ) : (
+                                                                            <div>No messages</div>
+                                                                        )
+                                                                    }
+                                                                </div>
                                                             </div>
-                                                            <div className="flex flex-row gap-1 text-xs poppins-medium text-gray-500">
-                                                                {
-                                                                    latestMessage ? (
-                                                                        <>
-                                                                            <div>{truncateString(latestMessage.message, 28)}</div>
-                                                                            <TimeAgo date={latestMessage.timestamp} />
-                                                                        </>
-                                                                    ) : (
-                                                                        <div>No messages</div>
-                                                                    )
-                                                                }
+                                                            <div className={`${unreadCount === 0 ? 'hidden' : 'block'} absolute top-2 left-2 h-5 w-5 bg-red-500 rounded-full flex flex-row justify-center items-center text-white text-xs poppins-bold`}>
+                                                                {unreadCount}
                                                             </div>
                                                         </div>
-                                                        <div className={`${unreadCount === 0 ? 'hidden' : 'block'} absolute top-2 left-2 h-5 w-5 bg-red-500 rounded-full flex flex-row justify-center items-center text-white text-xs poppins-bold`}>
-                                                            {unreadCount}
-                                                        </div>
-                                                    </div>
-                                                )
-                                            }
-                                        })}
+                                                    )
+                                                }
+                                            })}
                                     </div>
                                 </ScrollArea>
                             </div>
